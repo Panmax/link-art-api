@@ -7,7 +7,16 @@ import (
 )
 
 func GetLoginToken(phone, password string) (string, error) {
-	return "token", nil
+	account, err := model.FindAccountByPhone(phone)
+	if err != nil {
+		return "", err
+	}
+
+	if account.CheckPassword(password) {
+		return account.PasswordHash, nil // FIXME
+	}
+
+	return "", errors.New("手机号或密码错误")
 }
 
 func AccountRegister(phone, password string) (string, error) {

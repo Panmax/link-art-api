@@ -31,7 +31,7 @@ func Register(c *gin.Context) {
 
 	register := s.(*param_bind.Register)
 
-	if register.Sms != "999999" {
+	if register.Sms != "999999" { // FIXME
 		utilGin.ErrorResponse(-1, "验证码错误")
 		return
 	}
