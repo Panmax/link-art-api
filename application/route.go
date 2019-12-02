@@ -1,10 +1,10 @@
-package route
+package application
 
 import (
 	"github.com/gin-gonic/gin"
+	"link-art-api/application/api"
+	"link-art-api/application/middleware/requestid"
 	"link-art-api/infrastructure/util/response"
-	"link-art-api/route/api"
-	"link-art-api/route/middleware/requestid"
 )
 
 func Setup(engine *gin.Engine) {

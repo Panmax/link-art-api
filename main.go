@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"link-art-api/application"
+	"link-art-api/domain/model"
 	"link-art-api/infrastructure/config"
-	"link-art-api/route"
 	"log"
 	"net/http"
 	"os"
@@ -15,12 +16,13 @@ import (
 
 func init() {
 	config.Setup()
+	model.Setup()
 }
 
 func main() {
 	gin.SetMode(config.ServerConfig.Mode)
 	engine := gin.Default()
-	route.Setup(engine)
+	application.Setup(engine)
 
 	Port := fmt.Sprintf(":%d", config.ServerConfig.Port)
 	server := &http.Server{
