@@ -7,6 +7,12 @@ import (
 	"github.com/go-ini/ini"
 )
 
+type App struct {
+	JwtSecret string
+}
+
+var AppConfig = &App{}
+
 type Server struct {
 	Mode         string
 	Port         int
@@ -36,6 +42,7 @@ func Setup() {
 		log.Fatalf("setting.Setup, fail to parse 'conf/app.ini': %v", err)
 	}
 
+	mapTo("app", AppConfig)
 	mapTo("server", ServerConfig)
 	mapTo("database", DatabaseConfig)
 }

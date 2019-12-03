@@ -3,12 +3,12 @@ package application
 import (
 	"github.com/gin-gonic/gin"
 	"link-art-api/application/api"
-	"link-art-api/application/middleware/requestid"
+	"link-art-api/application/middleware"
 	"link-art-api/infrastructure/util/response"
 )
 
 func Setup(engine *gin.Engine) {
-	engine.Use(requestid.SetUp())
+	engine.Use(middleware.NewRequestIdMiddleware())
 
 	//404
 	engine.NoRoute(func(c *gin.Context) {

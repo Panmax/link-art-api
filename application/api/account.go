@@ -1,6 +1,10 @@
 package api
 
 import (
+	"link-art-api/application/middleware"
+	"link-art-api/domain/model"
+	"log"
+
 	"github.com/gin-gonic/gin"
 	"link-art-api/application/param_bind"
 	"link-art-api/domain/service"
@@ -9,10 +13,21 @@ import (
 )
 
 func AuthRouterRegister(router *gin.RouterGroup) {
-	auth := router.Group("/auth")
-	auth.POST("/register", Register)
-	auth.POST("/login", Login)
-	auth.GET("/logout", Logout)
+	authMiddleware, err := middleware.NewJWTMiddleware()
+	if err != nil {
+		log.Fatal("JWT Error:" + err.Error())
+	}
+
+	authGroup := router.Group("/auth")
+	authGroup.POST("/register", Register)
+	authGroup.POST("/login", authMiddleware.LoginHandler)
+	authGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
+
+	authGroup.Use(authMiddleware.MiddlewareFunc())
+	{
+		authGroup.GET("/logout", Logout)
+		authGroup.GET("/profile", Profile)
+	}
 }
 
 func AccountRouterRegister(router *gin.RouterGroup) {
@@ -67,4 +82,10 @@ func Login(c *gin.Context) {
 func Logout(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	utilGin.SuccessResponse(nil)
+}
+
+func Profile(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	utilGin.SuccessResponse(account.Phone)
 }

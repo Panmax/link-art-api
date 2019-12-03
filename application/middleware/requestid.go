@@ -1,4 +1,4 @@
-package requestid
+package middleware
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,7 +7,7 @@ import (
 
 const header = "X-Request-Id"
 
-func SetUp() gin.HandlerFunc {
+func NewRequestIdMiddleware() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		requestId := c.Request.Header.Get(header)
