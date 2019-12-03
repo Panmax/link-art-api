@@ -9,11 +9,11 @@ import (
 	"time"
 )
 
-const IdentityKey = "_account"
+const IdentityKey = "id"
 
 func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 	middleware := jwt.GinJWTMiddleware{
-		Realm:       "test zone",
+		Realm:       "myRealm",
 		Key:         []byte(config.AppConfig.JwtSecret),
 		Timeout:     8 * time.Hour,
 		MaxRefresh:  time.Hour,
@@ -21,7 +21,7 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*model.Account); ok {
 				return jwt.MapClaims{
-					IdentityKey: v.Phone,
+					IdentityKey: v.ID,
 				}
 			}
 			return jwt.MapClaims{}
@@ -29,7 +29,7 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 
-			account, err := model.FindAccountByPhone(claims[IdentityKey].(string))
+			account, err := model.FindAccount(uint(claims[IdentityKey].(float64)))
 			if err != nil {
 				return nil
 			}

@@ -42,3 +42,8 @@ func FindAccountByPhone(phone string) (account Account, err error) {
 	err = db.Where("phone = ?", phone).First(&account).Error
 	return
 }
+
+func FindAccount(id uint) (account Account, err error) {
+	err = db.Unscoped().First(&account, id).Error
+	return
+}
