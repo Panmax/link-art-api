@@ -3,7 +3,7 @@ package middleware
 import (
 	"github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"link-art-api/application/param_bind"
+	"link-art-api/application/command"
 	"link-art-api/domain/model"
 	"link-art-api/infrastructure/config"
 	"time"
@@ -33,15 +33,15 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 			if err != nil {
 				return nil
 			}
-			return &account
+			return account
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var loginVal param_bind.Login
-			if err := c.ShouldBind(&loginVal); err != nil {
+			var loginCommand command.LoginCommand
+			if err := c.ShouldBind(&loginCommand); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			phone := loginVal.Phone
-			password := loginVal.Password
+			phone := loginCommand.Phone
+			password := loginCommand.Password
 
 			account, err := model.FindAccountByPhone(phone)
 			if err == nil && account.CheckPassword(password) {

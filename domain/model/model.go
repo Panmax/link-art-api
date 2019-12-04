@@ -18,6 +18,11 @@ type Model struct {
 	UpdatedAt time.Time `gorm:"not null"`
 }
 
+func SaveOne(data interface{}) error {
+	err := db.Save(data).Error
+	return err
+}
+
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Account{})
 }

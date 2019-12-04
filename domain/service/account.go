@@ -3,32 +3,49 @@ package service
 import (
 	"errors"
 	"github.com/jinzhu/gorm"
+	"link-art-api/application/command"
 	"link-art-api/domain/model"
+	"time"
 )
 
-func GetLoginToken(phone, password string) (string, error) {
-	account, err := model.FindAccountByPhone(phone)
-	if err != nil {
-		return "", err
-	}
-
-	if account.CheckPassword(password) {
-		return account.PasswordHash, nil // FIXME
-	}
-
-	return "", errors.New("手机号或密码错误")
-}
-
-func AccountRegister(phone, password string) (string, error) {
+func AccountRegister(phone, password string) (*model.Account, error) {
 	_, err := model.FindAccountByPhone(phone)
 
 	// https://www.flysnow.org/2019/09/06/go1.13-error-wrapping.html
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return "", errors.New("手机号码已注册，可直接登录")
+		return nil, errors.New("手机号码已注册，可直接登录")
 	}
-	err = model.CreateAccount(phone, password)
+	account, err := model.CreateAccount(phone, password)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return "token", nil
+	return account, nil
+}
+
+func UpdateProfile(id uint, updateCommand *command.UpdateProfileCommand) (bool, error) {
+	account, err := model.FindAccount(id)
+	if err != nil {
+		return false, err
+	}
+	account.Name = updateCommand.Name
+	account.Gender = updateCommand.Gender
+	account.Introduce = updateCommand.Introduce
+	if updateCommand.Birth != nil {
+		birth := time.Unix(*updateCommand.Birth, 0)
+		account.Birth = &birth
+	}
+	err = model.SaveOne(account)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func ListAccountFollow(id uint) []map[string]string {
+	return make([]map[string]string, 0)
+}
+
+func ListAccountFans(id uint) []map[string]string {
+	return make([]map[string]string, 0)
 }
