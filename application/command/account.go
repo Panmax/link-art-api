@@ -2,20 +2,30 @@ package command
 
 // https://godoc.org/github.com/go-playground/validator
 type LoginCommand struct {
-	Phone    string `form:"phone" binding:"required,len=11"`
-	Password string `form:"password" binding:"required,min=8,max=32"`
+	Phone    string `binding:"required,len=11"`
+	Password string `binding:"required,min=8,max=32"`
 }
 
 type RegisterCommand struct {
-	Phone      string `form:"phone" binding:"required,len=11"`
-	Password   string `form:"password" binding:"required,min=8,max=32"`
-	Sms        string `form:"sms" binding:"required,len=6"`
-	InviteCode string `form:"invite_code"`
+	Phone      string `binding:"required,len=11"`
+	Password   string `binding:"required,min=8,max=32"`
+	Sms        string `binding:"required,len=6"`
+	InviteCode string
 }
 
 type UpdateProfileCommand struct {
-	Name      string `from:"string" binding:"required,max=16"`
-	Gender    uint8  `from:"gender" binding:"gte=0,lte=2"`
-	Introduce string `form:"invite_code,max=512"`
-	Birth     *int64 `from:"birth"`
+	Name      string `binding:"required,max=16"`
+	Gender    uint8  `binding:"gte=0,lte=2"`
+	Introduce string `binding:"max=512"`
+	Birth     *int64
+}
+
+type UpdateAvatarCommand struct {
+	Url string `json:"url" binding:"required,max=512"`
+}
+
+type SubmitApprovalCommand struct {
+	Type        uint8   `json:"type" binding:"min=0,max=2"`
+	CompanyName *string `json:"company_name"`
+	Photo       string  `json:"photo" binding:"required,max=512"`
 }

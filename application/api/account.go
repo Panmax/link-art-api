@@ -13,29 +13,6 @@ import (
 	"link-art-api/infrastructure/util/response"
 )
 
-func AuthRouterRegister(router *gin.RouterGroup) {
-	authMiddleware, err := middleware.NewJWTMiddleware()
-	if err != nil {
-		log.Fatal("JWT Error:" + err.Error())
-	}
-
-	authGroup := router.Group("/auth")
-	authGroup.POST("/register", Register)
-	authGroup.POST("/login", authMiddleware.LoginHandler)
-	authGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
-
-	authGroup.Use(authMiddleware.MiddlewareFunc())
-	{
-		authGroup.GET("/logout", Logout)
-		authGroup.GET("/profile", Profile)
-		authGroup.POST("/profile", UpdateProfile)
-	}
-}
-
-func AccountRouterRegister(router *gin.RouterGroup) {
-
-}
-
 func Register(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
@@ -84,6 +61,7 @@ func Profile(c *gin.Context) {
 
 	profile := &representation.AccountProfileRepresentation{}
 	profile.Name = account.Name
+	profile.Avatar = account.Avatar
 	profile.Phone = account.Phone
 	if account.Birth != nil {
 		birthUnix := account.Birth.Unix()
@@ -114,4 +92,41 @@ func UpdateProfile(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(result)
+}
+
+func UpdateAvatar(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	s, e := bind.Bind(&command.UpdateAvatarCommand{}, c)
+	if e != nil {
+		utilGin.ParamErrorResponse(e.Error())
+		return
+	}
+	updateCommand := s.(*command.UpdateAvatarCommand)
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	if err := account.UpdateAvatar(updateCommand.Url); err != nil {
+		utilGin.ParamErrorResponse(e.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(true)
+}
+
+func SubmitApproval(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
+	s, e := bind.Bind(&command.SubmitApprovalCommand{}, c)
+	if e != nil {
+		utilGin.ParamErrorResponse(e.Error())
+		return
+	}
+	submitCommand := s.(*command.SubmitApprovalCommand)
+
+	if err := service.SubmitApproval(account.ID, submitCommand); err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(true)
 }

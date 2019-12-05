@@ -11,14 +11,15 @@ import (
 func AccountRegister(phone, password string) (*model.Account, error) {
 	_, err := model.FindAccountByPhone(phone)
 
-	// https://www.flysnow.org/2019/09/06/go1.13-error-wrapping.html
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("手机号码已注册，可直接登录")
 	}
-	account, err := model.CreateAccount(phone, password)
-	if err != nil {
+
+	account := model.NewAccount(phone, password)
+	if err := model.CreateOne(account); err != nil {
 		return nil, err
 	}
+
 	return account, nil
 }
 
@@ -48,4 +49,14 @@ func ListAccountFollow(id uint) []map[string]string {
 
 func ListAccountFans(id uint) []map[string]string {
 	return make([]map[string]string, 0)
+}
+
+func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand) error {
+	_, err := model.FindApprovalByUser(accountId)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.New("认证审核中，请勿重复提交")
+	}
+
+	approval := model.NewApproval(accountId, submitCommand.Type, submitCommand.CompanyName, submitCommand.Photo)
+	return model.CreateOne(approval)
 }

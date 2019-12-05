@@ -23,8 +23,14 @@ func SaveOne(data interface{}) error {
 	return err
 }
 
+func CreateOne(data interface{}) error {
+	err := db.Create(data).Error
+	return err
+}
+
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Approval{})
 }
 
 // Setup initializes the database instance

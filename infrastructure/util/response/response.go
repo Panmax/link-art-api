@@ -22,7 +22,7 @@ func (g *Gin) Response(code int, message string, data interface{}) {
 }
 
 func (g *Gin) SuccessResponse(data interface{}) {
-	g.Response(0, "success", data)
+	g.Response(0, "ok", data)
 	return
 }
 
