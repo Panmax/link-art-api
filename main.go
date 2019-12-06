@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"link-art-api/application"
+	"link-art-api/application/middleware"
 	"link-art-api/domain/model"
 	"link-art-api/infrastructure/config"
 	"log"
@@ -17,6 +18,7 @@ import (
 func init() {
 	config.Setup()
 	model.Setup()
+	middleware.SetupAuth()
 }
 
 func main() {

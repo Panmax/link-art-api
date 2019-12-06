@@ -8,7 +8,8 @@ import (
 )
 
 type App struct {
-	JwtSecret string
+	JwtSecret  string
+	JwtTimeout time.Duration
 }
 
 var AppConfig = &App{}
@@ -45,6 +46,11 @@ func Setup() {
 	mapTo("app", AppConfig)
 	mapTo("server", ServerConfig)
 	mapTo("database", DatabaseConfig)
+
+	// FIXME
+	AppConfig.JwtTimeout = AppConfig.JwtTimeout * time.Second
+	ServerConfig.ReadTimeout = ServerConfig.ReadTimeout * time.Second
+	ServerConfig.WriteTimeout = ServerConfig.WriteTimeout * time.Second
 }
 
 // mapTo map section

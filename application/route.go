@@ -5,7 +5,6 @@ import (
 	"link-art-api/application/api"
 	"link-art-api/application/middleware"
 	"link-art-api/infrastructure/util/response"
-	"log"
 )
 
 func Setup(engine *gin.Engine) {
@@ -24,18 +23,13 @@ func Setup(engine *gin.Engine) {
 
 	apiGroup := engine.Group("/api")
 
-	authMiddleware, err := middleware.NewJWTMiddleware()
-	if err != nil {
-		log.Fatal("JWT Error:" + err.Error())
-	}
-
 	authGroup := apiGroup.Group("/auth")
 	{
 		authGroup.POST("/register", api.Register)
-		authGroup.POST("/login", authMiddleware.LoginHandler)
-		authGroup.POST("/refresh_token", authMiddleware.RefreshHandler)
+		authGroup.POST("/login", middleware.JWTMiddleware.LoginHandler)
+		authGroup.POST("/refresh_token", middleware.JWTMiddleware.RefreshHandler)
 
-		authGroup.Use(authMiddleware.MiddlewareFunc())
+		authGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			authGroup.GET("/logout", api.Logout)
 			authGroup.GET("/profile", api.Profile)
@@ -46,7 +40,7 @@ func Setup(engine *gin.Engine) {
 
 	accountGroup := apiGroup.Group("/accounts")
 	{
-		accountGroup.Use(authMiddleware.MiddlewareFunc())
+		accountGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			accountGroup.POST("/approval", api.SubmitApproval)
 		}

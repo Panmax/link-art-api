@@ -5,7 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"link-art-api/application/command"
 	"link-art-api/domain/model"
+	"link-art-api/domain/repository"
 	"link-art-api/infrastructure/config"
+	"log"
 	"time"
 )
 
@@ -29,7 +31,7 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 
-			account, err := model.FindAccount(uint(claims[IdentityKey].(float64)))
+			account, err := repository.FindAccount(uint(claims[IdentityKey].(float64)))
 			if err != nil {
 				return nil
 			}
@@ -43,7 +45,7 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 			phone := loginCommand.Phone
 			password := loginCommand.Password
 
-			account, err := model.FindAccountByPhone(phone)
+			account, err := repository.FindAccountByPhone(phone)
 			if err == nil && account.CheckPassword(password) {
 				return account, nil
 			}
@@ -59,4 +61,14 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 		},
 	}
 	return jwt.New(&middleware)
+}
+
+var JWTMiddleware *jwt.GinJWTMiddleware
+
+func SetupAuth() {
+	var err error
+	JWTMiddleware, err = NewJWTMiddleware()
+	if err != nil {
+		log.Fatal("JWT Error:" + err.Error())
+	}
 }

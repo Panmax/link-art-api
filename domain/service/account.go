@@ -5,11 +5,12 @@ import (
 	"github.com/jinzhu/gorm"
 	"link-art-api/application/command"
 	"link-art-api/domain/model"
+	"link-art-api/domain/repository"
 	"time"
 )
 
 func AccountRegister(phone, password string) (*model.Account, error) {
-	_, err := model.FindAccountByPhone(phone)
+	_, err := repository.FindAccountByPhone(phone)
 
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("手机号码已注册，可直接登录")
@@ -24,7 +25,7 @@ func AccountRegister(phone, password string) (*model.Account, error) {
 }
 
 func UpdateProfile(id uint, updateCommand *command.UpdateProfileCommand) (bool, error) {
-	account, err := model.FindAccount(id)
+	account, err := repository.FindAccount(id)
 	if err != nil {
 		return false, err
 	}
@@ -52,7 +53,7 @@ func ListAccountFans(id uint) []map[string]string {
 }
 
 func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand) error {
-	_, err := model.FindApprovalByUser(accountId)
+	_, err := repository.FindApprovalByUser(accountId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("认证审核中，请勿重复提交")
 	}

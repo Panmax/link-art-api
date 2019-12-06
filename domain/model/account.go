@@ -67,21 +67,3 @@ func (a *Account) CheckPassword(password string) bool {
 func (a *Account) UpdateAvatar(url *string) {
 	a.Avatar = url
 }
-
-func FindAccountByPhone(phone string) (*Account, error) {
-	account := &Account{}
-	err := db.Where("phone = ?", phone).First(&account).Error
-	return account, err
-}
-
-func FindAccount(id uint) (*Account, error) {
-	account := &Account{}
-	err := db.Unscoped().First(account, id).Error
-	return account, err
-}
-
-func FindApprovalByUser(accountId uint) (*Approval, error) {
-	approval := &Approval{}
-	err := db.Where("account_id = ?", accountId).Find(&approval).Error
-	return approval, err
-}

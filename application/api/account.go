@@ -1,13 +1,11 @@
 package api
 
 import (
+	"github.com/gin-gonic/gin"
 	"link-art-api/application/command"
 	"link-art-api/application/middleware"
 	"link-art-api/application/representation"
 	"link-art-api/domain/model"
-	"log"
-
-	"github.com/gin-gonic/gin"
 	"link-art-api/domain/service"
 	"link-art-api/infrastructure/util/bind"
 	"link-art-api/infrastructure/util/response"
@@ -36,12 +34,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	authMiddleware, err := middleware.NewJWTMiddleware()
-	if err != nil {
-		log.Fatal("JWT Error:" + err.Error())
-	}
-
-	token, _, err := authMiddleware.TokenGenerator(account)
+	token, _, err := middleware.JWTMiddleware.TokenGenerator(account)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
@@ -106,7 +99,7 @@ func UpdateAvatar(c *gin.Context) {
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 	account.UpdateAvatar(&updateCommand.Url)
 	if err := model.SaveOne(account); err != nil {
-		utilGin.ParamErrorResponse(e.Error())
+		utilGin.ParamErrorResponse(err.Error())
 		return
 	}
 

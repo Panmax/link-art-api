@@ -10,7 +10,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var db *gorm.DB
+var DB *gorm.DB
 
 type Model struct {
 	ID        uint      `gorm:"primary_key"`
@@ -19,12 +19,12 @@ type Model struct {
 }
 
 func SaveOne(data interface{}) error {
-	err := db.Save(data).Error
+	err := DB.Save(data).Error
 	return err
 }
 
 func CreateOne(data interface{}) error {
-	err := db.Create(data).Error
+	err := DB.Create(data).Error
 	return err
 }
 
@@ -36,7 +36,7 @@ func migrate(db *gorm.DB) {
 // Setup initializes the database instance
 func Setup() {
 	var err error
-	db, err = gorm.Open(config.DatabaseConfig.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	DB, err = gorm.Open(config.DatabaseConfig.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		config.DatabaseConfig.User,
 		config.DatabaseConfig.Password,
 		config.DatabaseConfig.Host,
@@ -46,9 +46,9 @@ func Setup() {
 		log.Fatalf("models.Setup err: %v", err)
 	}
 
-	db.SingularTable(true)
-	db.DB().SetMaxIdleConns(10)
-	db.DB().SetMaxOpenConns(100)
+	DB.SingularTable(true)
+	DB.DB().SetMaxIdleConns(10)
+	DB.DB().SetMaxOpenConns(100)
 
-	migrate(db)
+	migrate(DB)
 }
