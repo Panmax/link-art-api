@@ -64,9 +64,8 @@ func (a *Account) CheckPassword(password string) bool {
 	return false
 }
 
-func (a *Account) UpdateAvatar(url string) error {
-	err := db.Model(a).Update("avatar", url).Error
-	return err
+func (a *Account) UpdateAvatar(url *string) {
+	a.Avatar = url
 }
 
 func FindAccountByPhone(phone string) (*Account, error) {

@@ -104,7 +104,8 @@ func UpdateAvatar(c *gin.Context) {
 	}
 	updateCommand := s.(*command.UpdateAvatarCommand)
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
-	if err := account.UpdateAvatar(updateCommand.Url); err != nil {
+	account.UpdateAvatar(&updateCommand.Url)
+	if err := model.SaveOne(account); err != nil {
 		utilGin.ParamErrorResponse(e.Error())
 		return
 	}

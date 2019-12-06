@@ -45,7 +45,7 @@ func NewJWTMiddleware() (*jwt.GinJWTMiddleware, error) {
 
 			account, err := model.FindAccountByPhone(phone)
 			if err == nil && account.CheckPassword(password) {
-				return &account, nil
+				return account, nil
 			}
 
 			return nil, jwt.ErrFailedAuthentication
