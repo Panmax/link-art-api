@@ -67,8 +67,19 @@ func ApprovalPass(id uint) error {
 	if err != nil {
 		return nil
 	}
+
+	account, err := repository.FindAccount(approval.AccountId)
+	if err != nil {
+		return nil
+	}
+
 	approval.Pass()
-	return model.SaveOne(approval)
+	account.BeArtist()
+
+	tx := model.DB.Begin()
+	tx.Save(approval)
+	tx.Save(account)
+	return tx.Commit().Error
 }
 
 func ApprovalReject(id uint) error {
@@ -76,6 +87,17 @@ func ApprovalReject(id uint) error {
 	if err != nil {
 		return nil
 	}
+
+	account, err := repository.FindAccount(approval.AccountId)
+	if err != nil {
+		return nil
+	}
+
 	approval.Reject()
-	return model.SaveOne(approval)
+	account.CancelArtist()
+
+	tx := model.DB.Begin()
+	tx.Save(approval)
+	tx.Save(account)
+	return tx.Commit().Error
 }

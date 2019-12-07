@@ -83,6 +83,14 @@ func (a *Account) UpdateAvatar(url *string) {
 	a.Avatar = url
 }
 
+func (a *Account) BeArtist() {
+	a.Artist = true
+}
+
+func (a *Account) CancelArtist() {
+	a.Artist = false
+}
+
 func (a *Approval) Pass() {
 	a.Status = ApprovalPassStatus
 }
