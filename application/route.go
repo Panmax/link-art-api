@@ -46,4 +46,15 @@ func Setup(engine *gin.Engine) {
 		}
 	}
 
+	productGroup := apiGroup.Group("/products")
+	{
+		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			productGroup.POST("", api.CreateProduct)
+			productGroup.PUT("", api.UpdateProduct)
+			productGroup.GET("", api.ListMyProduct)
+			productGroup.POST("/:id/shelves", api.ShelvesProduct)
+			productGroup.POST("/:id/take-off", api.TakeOffProduct)
+		}
+	}
 }
