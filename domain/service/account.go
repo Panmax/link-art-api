@@ -61,3 +61,21 @@ func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand
 	approval := model.NewApproval(accountId, submitCommand.Type, submitCommand.CompanyName, submitCommand.Photo)
 	return model.CreateOne(approval)
 }
+
+func ApprovalPass(id uint) error {
+	approval, err := repository.FundApproval(id)
+	if err != nil {
+		return nil
+	}
+	approval.Pass()
+	return model.SaveOne(approval)
+}
+
+func ApprovalReject(id uint) error {
+	approval, err := repository.FundApproval(id)
+	if err != nil {
+		return nil
+	}
+	approval.Reject()
+	return model.SaveOne(approval)
+}

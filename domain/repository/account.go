@@ -19,3 +19,9 @@ func FindApprovalByUser(accountId uint) (*model.Approval, error) {
 	err := model.DB.Where("account_id = ?", accountId).Find(&approval).Error
 	return approval, err
 }
+
+func FundApproval(id uint) (*model.Approval, error) {
+	approval := &model.Approval{}
+	err := model.DB.Unscoped().First(approval, id).Error
+	return approval, err
+}

@@ -116,6 +116,10 @@ func SubmitApproval(c *gin.Context) {
 		return
 	}
 	submitCommand := s.(*command.SubmitApprovalCommand)
+	if submitCommand.Type != model.ApprovalPersonalType && submitCommand.Type != model.ApprovalCompanyType {
+		utilGin.ParamErrorResponse("申请类型错误")
+		return
+	}
 
 	if err := service.SubmitApproval(account.ID, submitCommand); err != nil {
 		utilGin.ErrorResponse(-1, err.Error())

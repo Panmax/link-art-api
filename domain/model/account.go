@@ -28,23 +28,38 @@ func NewAccount(phone, password string) *Account {
 	return account
 }
 
+type ApprovalType uint8
+
+const (
+	ApprovalPersonalType ApprovalType = 1
+	ApprovalCompanyType  ApprovalType = 2
+)
+
+type ApprovalStatus uint8
+
+const (
+	ApprovalUnprocessedStatus ApprovalStatus = 0
+	ApprovalPassStatus        ApprovalStatus = 1
+	ApprovalRejectStatus      ApprovalStatus = 2
+)
+
 type Approval struct {
 	Model
 
-	AccountId   uint    `gorm:"not null;unique_index"`
-	Type        uint8   `gorm:"not null"`
-	CompanyName *string `gorm:"size:64"`
-	Photo       string  `gorm:"size:512;not null"`
-	Status      uint8   `gorm:"not null"`
+	AccountId   uint           `gorm:"not null;unique_index"`
+	Type        ApprovalType   `gorm:"not null"`
+	CompanyName *string        `gorm:"size:64"`
+	Photo       string         `gorm:"size:512;not null"`
+	Status      ApprovalStatus `gorm:"not null"`
 }
 
-func NewApproval(accountId uint, _type uint8, companyName *string, photo string) *Approval {
+func NewApproval(accountId uint, approvalType ApprovalType, companyName *string, photo string) *Approval {
 	return &Approval{
 		AccountId:   accountId,
-		Type:        _type,
+		Type:        approvalType,
 		CompanyName: companyName,
 		Photo:       photo,
-		Status:      0,
+		Status:      ApprovalUnprocessedStatus,
 	}
 }
 
@@ -66,4 +81,12 @@ func (a *Account) CheckPassword(password string) bool {
 
 func (a *Account) UpdateAvatar(url *string) {
 	a.Avatar = url
+}
+
+func (a *Approval) Pass() {
+	a.Status = ApprovalPassStatus
+}
+
+func (a *Approval) Reject() {
+	a.Status = ApprovalPassStatus
 }

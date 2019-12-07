@@ -1,5 +1,7 @@
 package command
 
+import "link-art-api/domain/model"
+
 // https://godoc.org/github.com/go-playground/validator
 type LoginCommand struct {
 	Phone    string `binding:"required,len=11"`
@@ -25,7 +27,7 @@ type UpdateAvatarCommand struct {
 }
 
 type SubmitApprovalCommand struct {
-	Type        uint8   `json:"type" binding:"min=0,max=2"`
-	CompanyName *string `json:"company_name"`
-	Photo       string  `json:"photo" binding:"required,max=512"`
+	Type        model.ApprovalType `json:"type" binding:"required"`
+	CompanyName *string            `json:"company_name"`
+	Photo       string             `json:"photo" binding:"required,max=512"`
 }
