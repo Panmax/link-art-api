@@ -87,6 +87,10 @@ func (a *Account) BeArtist() {
 	a.Artist = true
 }
 
+func (a *Account) IsArtist() bool {
+	return a.Artist
+}
+
 func (a *Account) CancelArtist() {
 	a.Artist = false
 }

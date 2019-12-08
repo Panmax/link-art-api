@@ -20,5 +20,5 @@ require (
 	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/go-playground/validator.v9 v9.30.2 // indirect
 	gopkg.in/yaml.v2 v2.2.7 // indirect
-	qiniupkg.com/x v7.0.8+incompatible // indirect
+	qiniupkg.com/x v7.0.8+incompatible
 )

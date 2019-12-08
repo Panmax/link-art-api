@@ -10,6 +10,6 @@ type CreateProductCommand struct {
 	Year        string
 	Material    string
 	MainPic     string
-	DetailsPics []string
+	DetailsPics []string `json:"details_pics"`
 	Description string
 }

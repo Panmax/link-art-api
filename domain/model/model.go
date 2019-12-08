@@ -31,6 +31,7 @@ func CreateOne(data interface{}) error {
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Account{})
 	db.AutoMigrate(&Approval{})
+	db.AutoMigrate(&Product{})
 }
 
 // Setup initializes the database instance

@@ -14,14 +14,14 @@ import (
 func Register(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
-	s, e := bind.Bind(&command.RegisterCommand{}, c)
+	cmd, e := bind.Bind(&command.RegisterCommand{}, c)
 
 	if e != nil {
 		utilGin.ParamErrorResponse(e.Error())
 		return
 	}
 
-	registerCommand := s.(*command.RegisterCommand)
+	registerCommand := cmd.(*command.RegisterCommand)
 
 	if registerCommand.Sms != "999999" { // FIXME
 		utilGin.ErrorResponse(-1, "验证码错误")
@@ -71,13 +71,13 @@ func UpdateProfile(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
-	s, e := bind.Bind(&command.UpdateProfileCommand{}, c)
+	cmd, e := bind.Bind(&command.UpdateProfileCommand{}, c)
 	if e != nil {
 		utilGin.ParamErrorResponse(e.Error())
 		return
 	}
 
-	updateCommand := s.(*command.UpdateProfileCommand)
+	updateCommand := cmd.(*command.UpdateProfileCommand)
 	result, err := service.UpdateProfile(account.ID, updateCommand)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
@@ -90,12 +90,12 @@ func UpdateProfile(c *gin.Context) {
 func UpdateAvatar(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
-	s, e := bind.Bind(&command.UpdateAvatarCommand{}, c)
+	cmd, e := bind.Bind(&command.UpdateAvatarCommand{}, c)
 	if e != nil {
 		utilGin.ParamErrorResponse(e.Error())
 		return
 	}
-	updateCommand := s.(*command.UpdateAvatarCommand)
+	updateCommand := cmd.(*command.UpdateAvatarCommand)
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 	account.UpdateAvatar(&updateCommand.Url)
 	if err := model.SaveOne(account); err != nil {
@@ -110,12 +110,12 @@ func SubmitApproval(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
-	s, e := bind.Bind(&command.SubmitApprovalCommand{}, c)
+	cmd, e := bind.Bind(&command.SubmitApprovalCommand{}, c)
 	if e != nil {
 		utilGin.ParamErrorResponse(e.Error())
 		return
 	}
-	submitCommand := s.(*command.SubmitApprovalCommand)
+	submitCommand := cmd.(*command.SubmitApprovalCommand)
 	if submitCommand.Type != model.ApprovalPersonalType && submitCommand.Type != model.ApprovalCompanyType {
 		utilGin.ParamErrorResponse("申请类型错误")
 		return
