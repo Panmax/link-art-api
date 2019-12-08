@@ -33,6 +33,15 @@ type Database struct {
 
 var DatabaseConfig = &Database{}
 
+type Qiniu struct {
+	Bucket    string
+	Prefix    string
+	AccessKey string
+	SecretKey string
+}
+
+var QiniuConfig = &Qiniu{}
+
 var cfg *ini.File
 
 // Setup initialize the configuration instance
@@ -46,6 +55,7 @@ func Setup() {
 	mapTo("app", AppConfig)
 	mapTo("server", ServerConfig)
 	mapTo("database", DatabaseConfig)
+	mapTo("qiniu", QiniuConfig)
 
 	// FIXME
 	AppConfig.JwtTimeout = AppConfig.JwtTimeout * time.Second

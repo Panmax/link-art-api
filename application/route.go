@@ -57,4 +57,9 @@ func Setup(engine *gin.Engine) {
 			productGroup.POST("/:id/take-off", api.TakeOffProduct)
 		}
 	}
+
+	commonGroup := apiGroup.Group("/common")
+	{
+		commonGroup.GET("/oss/token", api.GetOssToken)
+	}
 }
