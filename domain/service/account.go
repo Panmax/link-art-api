@@ -11,7 +11,6 @@ import (
 
 func AccountRegister(phone, password string) (*model.Account, error) {
 	_, err := repository.FindAccountByPhone(phone)
-
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("手机号码已注册，可直接登录")
 	}
