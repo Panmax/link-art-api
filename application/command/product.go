@@ -1,15 +1,16 @@
 package command
 
 type CreateProductCommand struct {
-	Name        string
-	Type        uint
-	Self        bool
-	Price       uint
-	Stock       int
-	Size        string
-	Year        string
-	Material    string
-	MainPic     string
-	DetailsPics []string `json:"details_pics"`
+	Name        string `binding:"required"`
+	Type        uint   `binding:"required"`
+	Self        bool   `binding:"required"`
+	Price       uint   `binding:"required"`
+	Stock       int    `binding:"required"`
+	Length      *uint
+	Width       *uint
+	Year        *string
+	Material    string   `binding:"required"`
+	MainPic     string   `json:"main_pic" binding:"required"`
+	DetailPics  []string `json:"detail_pics" binding:"required"`
 	Description string
 }

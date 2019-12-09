@@ -10,6 +10,6 @@ type ProductRepresentation struct {
 	Year        string
 	Material    string
 	MainPic     string
-	DetailsPics []string
+	DetailPics  []string
 	Description string
 }

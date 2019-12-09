@@ -52,7 +52,7 @@ func Setup(engine *gin.Engine) {
 		{
 			productGroup.POST("", api.CreateProduct)
 			productGroup.PUT("", api.UpdateProduct)
-			productGroup.GET("", api.ListMyProduct)
+			productGroup.GET("", api.ListAccountProduct)
 			productGroup.POST("/:id/shelves", api.ShelvesProduct)
 			productGroup.POST("/:id/take-off", api.TakeOffProduct)
 		}

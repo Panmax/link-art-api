@@ -25,7 +25,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 	productCommand := cmd.(*command.CreateProductCommand)
-	_, err := json.Marshal(productCommand.DetailsPics)
+	_, err := json.Marshal(productCommand.DetailPics)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
@@ -44,8 +44,11 @@ func UpdateProduct(c *gin.Context) {
 
 }
 
-func ListMyProduct(c *gin.Context) {
-
+func ListAccountProduct(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	products, _ := service.ListAccountProduct(account.ID)
+	utilGin.SuccessResponse(products)
 }
 
 func ShelvesProduct(c *gin.Context) {
