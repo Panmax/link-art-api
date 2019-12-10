@@ -6,7 +6,7 @@ type Product struct {
 	AccountId uint `gorm:"not null"`
 
 	Name            string `gorm:"size:64;not null"`
-	Type            uint   `gorm:"not null"`
+	CategoryId      uint   `gorm:"not null"`
 	Self            bool   `gorm:"not null"`
 	Price           uint   `gorm:"not null"`
 	Stock           int    `gorm:"not null"`
@@ -19,13 +19,13 @@ type Product struct {
 	Description     string `gorm:"type:text;not null"`
 }
 
-func NewProduct(AccountId uint, Name string, Type uint, Self bool, Price uint, Stock int, Length *uint, Width *uint, Year *string,
+func NewProduct(AccountId uint, Name string, CategoryId uint, Self bool, Price uint, Stock int, Length *uint, Width *uint, Year *string,
 	Material string, MainPic string, DetailsPicsJson string, Description string) *Product {
 
 	return &Product{
 		AccountId:       AccountId,
 		Name:            Name,
-		Type:            Type,
+		CategoryId:      CategoryId,
 		Self:            Self,
 		Price:           Price,
 		Stock:           Stock,

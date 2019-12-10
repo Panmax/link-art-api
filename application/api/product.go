@@ -46,8 +46,14 @@ func UpdateProduct(c *gin.Context) {
 
 func ListAccountProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
+
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
-	products, _ := service.ListAccountProduct(account.ID)
+	products, err := service.ListAccountProduct(account.ID)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
 	utilGin.SuccessResponse(products)
 }
 

@@ -2,7 +2,7 @@ package command
 
 type CreateProductCommand struct {
 	Name        string `binding:"required"`
-	Type        uint   `binding:"required"`
+	CategoryId  uint   `json:"category_id" binding:"required"`
 	Self        bool   `binding:"required"`
 	Price       uint   `binding:"required"`
 	Stock       int    `binding:"required"`
