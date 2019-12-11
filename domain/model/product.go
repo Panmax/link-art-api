@@ -6,6 +6,7 @@ type Product struct {
 	AccountId uint `gorm:"not null"`
 
 	Name            string `gorm:"size:64;not null"`
+	Status          uint   `gorm:"not null"`
 	CategoryId      uint   `gorm:"not null"`
 	Self            bool   `gorm:"not null"`
 	Price           uint   `gorm:"not null"`
@@ -25,6 +26,7 @@ func NewProduct(AccountId uint, Name string, CategoryId uint, Self bool, Price u
 	return &Product{
 		AccountId:       AccountId,
 		Name:            Name,
+		Status:          1, // TODO
 		CategoryId:      CategoryId,
 		Self:            Self,
 		Price:           Price,
@@ -37,4 +39,27 @@ func NewProduct(AccountId uint, Name string, CategoryId uint, Self bool, Price u
 		DetailsPicsJson: DetailsPicsJson,
 		Description:     Description,
 	}
+}
+
+func (p *Product) Update(updatedProduct *Product) {
+	p.Name = updatedProduct.Name
+	p.CategoryId = updatedProduct.CategoryId
+	p.Self = updatedProduct.Self
+	p.Price = updatedProduct.Price
+	p.Stock = updatedProduct.Stock
+	p.Length = updatedProduct.Length
+	p.Width = updatedProduct.Width
+	p.Year = updatedProduct.Year
+	p.Material = updatedProduct.Material
+	p.MainPic = updatedProduct.MainPic
+	p.DetailsPicsJson = updatedProduct.DetailsPicsJson
+	p.Description = updatedProduct.Description
+}
+
+func (p *Product) Shelves() {
+	p.Status = 1
+}
+
+func (p *Product) TakeOff() {
+	p.Status = 0
 }

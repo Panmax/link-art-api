@@ -51,7 +51,7 @@ func Setup(engine *gin.Engine) {
 		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			productGroup.POST("", api.CreateProduct)
-			productGroup.PUT("", api.UpdateProduct)
+			productGroup.PUT("/:id", api.UpdateProduct)
 			productGroup.GET("", api.ListAccountProduct)
 			productGroup.POST("/:id/shelves", api.ShelvesProduct)
 			productGroup.POST("/:id/take-off", api.TakeOffProduct)

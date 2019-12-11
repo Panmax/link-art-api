@@ -12,6 +12,7 @@ require (
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
+	github.com/pkg/errors v0.8.0
 	github.com/qiniu/api.v7 v7.2.5+incompatible
 	github.com/qiniu/x v7.0.8+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c

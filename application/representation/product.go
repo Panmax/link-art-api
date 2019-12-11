@@ -6,26 +6,28 @@ import (
 )
 
 type ProductRepresentation struct {
-	Name        string
-	Category    interface{} // TODO
-	Self        bool
-	Price       uint
-	Stock       int
-	Length      *uint
-	Width       *uint
-	Year        *string
-	Material    string
-	MainPic     string
-	DetailPics  []string
-	Description string
+	Id          uint                    `json:"id"`
+	Name        string                  `json:"name"`
+	Category    *CategoryRepresentation `json:"category"`
+	Self        bool                    `json:"self"`
+	Price       uint                    `json:"price"`
+	Stock       int                     `json:"stock"`
+	Length      *uint                   `json:"length"`
+	Width       *uint                   `json:"width"`
+	Year        *string                 `json:"year"`
+	Material    string                  `json:"material"`
+	MainPic     string                  `json:"main_pic"`
+	DetailPics  []string                `json:"detail_pics"`
+	Description string                  `json:"description"`
 }
 
-func NewProductRepresentation(product model.Product) *ProductRepresentation {
+func NewProductRepresentation(product *model.Product) *ProductRepresentation {
 
 	var detailPics []string
 	_ = json.Unmarshal([]byte(product.DetailsPicsJson), &detailPics)
 
 	productRepresentation := &ProductRepresentation{
+		Id:          product.ID,
 		Name:        product.Name,
 		Self:        product.Self,
 		Price:       product.Price,
@@ -40,4 +42,10 @@ func NewProductRepresentation(product model.Product) *ProductRepresentation {
 	}
 
 	return productRepresentation
+}
+
+type CategoryRepresentation struct {
+	Id       string
+	Name     string
+	Children *[]CategoryRepresentation
 }
