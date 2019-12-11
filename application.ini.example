@@ -1,0 +1,28 @@
+[app]
+JwtSecret = your-jwt-secret
+
+[server]
+Mode = debug
+Port = 8000
+ReadTimeout = 60
+WriteTimeout = 60
+
+[database]
+Type = mysql
+User = root
+Password = root
+Host = 127.0.0.1:3306
+Name = link-art
+
+[redis]
+Host = 127.0.0.1:6379
+Password =
+MaxIdle = 30
+MaxActive = 30
+IdleTimeout = 200
+
+[qiniu]
+Bucket = link-art
+Prefix = http://your-prefix/
+AccessKey = your-access-key
+SecretKey = your-secret-key
