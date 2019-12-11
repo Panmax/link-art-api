@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/pkg/errors"
+	"errors"
 	"link-art-api/application/command"
 	"link-art-api/application/representation"
 	"link-art-api/domain/model"
@@ -28,7 +28,7 @@ func UpdateProduct(id uint, accountId *uint, productCommand *command.CreateProdu
 		return err
 	}
 	if accountId != nil && product.AccountId != *accountId {
-		return errors.New("fuck you.")
+		return errors.New("无权限")
 	}
 	product.Update(newProduct)
 
@@ -65,7 +65,7 @@ func ShelvesProduct(id uint, accountId *uint) error {
 		return err
 	}
 	if accountId != nil && product.AccountId != *accountId {
-		return errors.New("fuck you.")
+		return errors.New("无权限")
 	}
 	product.Shelves()
 	return model.SaveOne(product)
@@ -77,7 +77,7 @@ func TakeOffProduct(id uint, accountId *uint) error {
 		return err
 	}
 	if accountId != nil && product.AccountId != *accountId {
-		return errors.New("fuck you.")
+		return errors.New("无权限")
 	}
 	product.TakeOff()
 	return model.SaveOne(product)
