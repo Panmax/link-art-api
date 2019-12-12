@@ -48,6 +48,8 @@ func Setup(engine *gin.Engine) {
 
 	productGroup := apiGroup.Group("/products")
 	{
+		productGroup.GET("/categories", api.ListAllCategory)
+
 		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			productGroup.POST("", api.CreateProduct)

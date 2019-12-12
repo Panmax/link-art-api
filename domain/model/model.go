@@ -32,6 +32,7 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Account{})
 	db.AutoMigrate(&Approval{})
 	db.AutoMigrate(&Product{})
+	db.AutoMigrate(&Category{})
 }
 
 // Setup initializes the database instance
@@ -50,6 +51,7 @@ func Setup() {
 	DB.SingularTable(true)
 	DB.DB().SetMaxIdleConns(10)
 	DB.DB().SetMaxOpenConns(100)
+	DB.LogMode(true)
 
 	migrate(DB)
 }

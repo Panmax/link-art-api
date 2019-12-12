@@ -139,6 +139,14 @@ func TakeOffProduct(c *gin.Context) {
 	utilGin.SuccessResponse(true)
 }
 
-func ListCategory(c *gin.Context) {
+func ListAllCategory(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
 
+	categories, err := service.ListAllCategory()
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(categories)
 }

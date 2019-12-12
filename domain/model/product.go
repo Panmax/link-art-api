@@ -63,3 +63,11 @@ func (p *Product) Shelves() {
 func (p *Product) TakeOff() {
 	p.Status = 0
 }
+
+type Category struct {
+	Model
+
+	Name     string `gorm:"size:64;not null"`
+	ParentId *uint
+	Sort     int `gorm:"not null"`
+}

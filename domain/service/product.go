@@ -82,3 +82,39 @@ func TakeOffProduct(id uint, accountId *uint) error {
 	product.TakeOff()
 	return model.SaveOne(product)
 }
+
+func ListCategoryByParentId(parentId *uint) ([]*representation.CategoryRepresentation, error) {
+	var categoryRepresentations []*representation.CategoryRepresentation
+
+	categories, err := repository.FindAllCategoryByParentId(parentId)
+	if err != nil {
+		return nil, err
+	}
+	for _, c := range categories {
+		categoryRepresentations = append(categoryRepresentations, representation.NewCategoryRepresentation(&c))
+	}
+
+	return categoryRepresentations, nil
+}
+
+func ListAllCategory() ([]*representation.CategoryRepresentation, error) {
+	categories, err := ListCategoryByParentId(nil)
+	if err != nil {
+		return nil, err
+	}
+	return categories, fillUpChild(categories)
+}
+
+func fillUpChild(categories []*representation.CategoryRepresentation) error {
+	for _, c := range categories {
+		children, err := ListCategoryByParentId(&c.Id)
+		if err != nil {
+			return err
+		}
+		c.Children = children
+		if children != nil {
+			return fillUpChild(children)
+		}
+	}
+	return nil
+}

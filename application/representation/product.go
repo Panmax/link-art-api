@@ -45,7 +45,15 @@ func NewProductRepresentation(product *model.Product) *ProductRepresentation {
 }
 
 type CategoryRepresentation struct {
-	Id       string
-	Name     string
-	Children *[]CategoryRepresentation
+	Id       uint                      `json:"id"`
+	Name     string                    `json:"name"`
+	Children []*CategoryRepresentation `json:"children"`
+}
+
+func NewCategoryRepresentation(category *model.Category) *CategoryRepresentation {
+	return &CategoryRepresentation{
+		Id:       category.ID,
+		Name:     category.Name,
+		Children: nil,
+	}
 }
