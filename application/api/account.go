@@ -11,6 +11,33 @@ import (
 	"link-art-api/infrastructure/util/response"
 )
 
+func AuthRouterRegister(group *gin.RouterGroup) {
+	authGroup := group.Group("/auth")
+	{
+		authGroup.POST("/register", Register)
+		authGroup.POST("/login", middleware.JWTMiddleware.LoginHandler)
+		authGroup.POST("/refresh_token", middleware.JWTMiddleware.RefreshHandler)
+
+		authGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			authGroup.GET("/logout", Logout)
+			authGroup.GET("/profile", Profile)
+			authGroup.POST("/profile", UpdateProfile)
+			authGroup.PUT("/avatar", UpdateAvatar)
+		}
+	}
+}
+
+func AccountRouterRegister(group *gin.RouterGroup) {
+	accountGroup := group.Group("/accounts")
+	{
+		accountGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			accountGroup.POST("/approval", SubmitApproval)
+		}
+	}
+}
+
 func Register(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 

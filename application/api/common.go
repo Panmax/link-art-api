@@ -8,6 +8,13 @@ import (
 	"link-art-api/infrastructure/util/response"
 )
 
+func CommonRouterRegister(group *gin.RouterGroup) {
+	commonGroup := group.Group("/common")
+	{
+		commonGroup.GET("/oss/token", GetOssToken)
+	}
+}
+
 func GetOssToken(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 

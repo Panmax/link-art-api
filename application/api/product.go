@@ -12,6 +12,33 @@ import (
 	"strconv"
 )
 
+func ProductRouterRegister(group *gin.RouterGroup) {
+	productGroup := group.Group("/products")
+	{
+		productGroup.GET("/categories", ListCategoryTree)
+
+		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			productGroup.POST("", CreateProduct)
+			productGroup.PUT("/:id", UpdateProduct)
+			productGroup.GET("", ListAccountProduct)
+			productGroup.POST("/:id/shelves", ShelvesProduct)
+			productGroup.POST("/:id/take-off", TakeOffProduct)
+		}
+	}
+}
+
+func AuctionRouterRegister(group *gin.RouterGroup) {
+	auctionGroup := group.Group("/auctions")
+	{
+		auctionGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			auctionGroup.POST("", SubmitAuction)
+			auctionGroup.GET("", ListAuction)
+		}
+	}
+}
+
 func CreateProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)

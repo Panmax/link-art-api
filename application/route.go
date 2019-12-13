@@ -22,55 +22,12 @@ func Setup(engine *gin.Engine) {
 	})
 
 	apiGroup := engine.Group("/api")
+	api.AuthRouterRegister(apiGroup)
+	api.AccountRouterRegister(apiGroup)
 
-	authGroup := apiGroup.Group("/auth")
-	{
-		authGroup.POST("/register", api.Register)
-		authGroup.POST("/login", middleware.JWTMiddleware.LoginHandler)
-		authGroup.POST("/refresh_token", middleware.JWTMiddleware.RefreshHandler)
+	api.ProductRouterRegister(apiGroup)
+	api.AuctionRouterRegister(apiGroup)
 
-		authGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
-		{
-			authGroup.GET("/logout", api.Logout)
-			authGroup.GET("/profile", api.Profile)
-			authGroup.POST("/profile", api.UpdateProfile)
-			authGroup.PUT("/avatar", api.UpdateAvatar)
-		}
-	}
+	api.CommonRouterRegister(apiGroup)
 
-	accountGroup := apiGroup.Group("/accounts")
-	{
-		accountGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
-		{
-			accountGroup.POST("/approval", api.SubmitApproval)
-		}
-	}
-
-	productGroup := apiGroup.Group("/products")
-	{
-		productGroup.GET("/categories", api.ListCategoryTree)
-
-		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
-		{
-			productGroup.POST("", api.CreateProduct)
-			productGroup.PUT("/:id", api.UpdateProduct)
-			productGroup.GET("", api.ListAccountProduct)
-			productGroup.POST("/:id/shelves", api.ShelvesProduct)
-			productGroup.POST("/:id/take-off", api.TakeOffProduct)
-		}
-	}
-
-	auctionGroup := apiGroup.Group("/auctions")
-	{
-		auctionGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
-		{
-			auctionGroup.POST("", api.SubmitAuction)
-			auctionGroup.GET("", api.ListAuction)
-		}
-	}
-
-	commonGroup := apiGroup.Group("/common")
-	{
-		commonGroup.GET("/oss/token", api.GetOssToken)
-	}
 }
