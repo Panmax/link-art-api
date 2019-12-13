@@ -24,3 +24,9 @@ func FindAllCategoryByParentId(parentId *uint) ([]model.Category, error) {
 	}
 	return categories, err
 }
+
+func FindCategory(id uint) (*model.Category, error) {
+	category := &model.Category{}
+	err := model.DB.Unscoped().First(category, id).Error
+	return category, err
+}

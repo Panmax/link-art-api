@@ -11,6 +11,11 @@ import (
 func CreateProduct(accountId uint, productCommand *command.CreateProductCommand) error {
 	picsJson, _ := productCommand.GetDetailPicsJson()
 
+	_, err := repository.FindCategory(productCommand.CategoryId)
+	if err != nil {
+		return errors.New("作品分类无效")
+	}
+
 	product := model.NewProduct(accountId, productCommand.Name, productCommand.CategoryId, productCommand.Self,
 		productCommand.Price, productCommand.Stock, productCommand.Length, productCommand.Width, productCommand.Year,
 		productCommand.Material, productCommand.MainPic, string(picsJson), productCommand.Description)
@@ -44,7 +49,12 @@ func ListProductByAccount(accountId uint) ([]*representation.ProductRepresentati
 	}
 
 	for _, p := range products {
-		productRepresentations = append(productRepresentations, representation.NewProductRepresentation(&p))
+		productRepresentation, err := GetProduct(p.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		productRepresentations = append(productRepresentations, productRepresentation)
 	}
 
 	return productRepresentations, nil
@@ -56,7 +66,12 @@ func GetProduct(id uint) (*representation.ProductRepresentation, error) {
 		return nil, err
 	}
 
-	return representation.NewProductRepresentation(product), nil
+	category, err := repository.FindCategory(product.CategoryId)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewProductRepresentation(product, category), nil
 }
 
 func ShelvesProduct(id uint, accountId *uint) error {
@@ -102,7 +117,13 @@ func ListAllCategory() ([]*representation.CategoryRepresentation, error) {
 	if err != nil {
 		return nil, err
 	}
-	return categories, fillUpChild(categories)
+
+	err = fillUpChild(categories)
+	if err != nil {
+		return nil, err
+	}
+
+	return categories, nil
 }
 
 func fillUpChild(categories []*representation.CategoryRepresentation) error {

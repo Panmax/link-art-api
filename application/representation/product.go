@@ -21,7 +21,7 @@ type ProductRepresentation struct {
 	Description string                  `json:"description"`
 }
 
-func NewProductRepresentation(product *model.Product) *ProductRepresentation {
+func NewProductRepresentation(product *model.Product, category *model.Category) *ProductRepresentation {
 
 	var detailPics []string
 	_ = json.Unmarshal([]byte(product.DetailsPicsJson), &detailPics)
@@ -29,6 +29,7 @@ func NewProductRepresentation(product *model.Product) *ProductRepresentation {
 	productRepresentation := &ProductRepresentation{
 		Id:          product.ID,
 		Name:        product.Name,
+		Category:    NewCategoryRepresentation(category),
 		Self:        product.Self,
 		Price:       product.Price,
 		Stock:       product.Stock,
