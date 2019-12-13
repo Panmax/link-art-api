@@ -46,15 +46,27 @@ func NewProductRepresentation(product *model.Product, category *model.Category) 
 }
 
 type CategoryRepresentation struct {
-	Id       uint                      `json:"id"`
+	ID       uint                      `json:"id"`
 	Name     string                    `json:"name"`
 	Children []*CategoryRepresentation `json:"children"`
 }
 
 func NewCategoryRepresentation(category *model.Category) *CategoryRepresentation {
 	return &CategoryRepresentation{
-		Id:       category.ID,
+		ID:       category.ID,
 		Name:     category.Name,
 		Children: nil,
 	}
+}
+
+type AuctionRepresentation struct {
+	ID        uint   `json:"id"`
+	Type      uint8  `json:"type"`
+	StartTime uint64 `json:"start_time"`
+	Status    uint8  `json:"status"`
+}
+
+type AuctionProductRepresentation struct {
+	Product    ProductRepresentation `json:"product"`
+	StartPrice uint                  `json:"start_price"`
 }

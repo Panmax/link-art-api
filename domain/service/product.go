@@ -128,7 +128,7 @@ func ListAllCategory() ([]*representation.CategoryRepresentation, error) {
 
 func fillUpChild(categories []*representation.CategoryRepresentation) error {
 	for _, c := range categories {
-		children, err := ListCategoryByParentId(&c.Id)
+		children, err := ListCategoryByParentId(&c.ID)
 		if err != nil {
 			return err
 		}

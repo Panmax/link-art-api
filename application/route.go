@@ -48,7 +48,7 @@ func Setup(engine *gin.Engine) {
 
 	productGroup := apiGroup.Group("/products")
 	{
-		productGroup.GET("/categories", api.ListAllCategory)
+		productGroup.GET("/categories", api.ListCategoryTree)
 
 		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
@@ -57,6 +57,15 @@ func Setup(engine *gin.Engine) {
 			productGroup.GET("", api.ListAccountProduct)
 			productGroup.POST("/:id/shelves", api.ShelvesProduct)
 			productGroup.POST("/:id/take-off", api.TakeOffProduct)
+		}
+	}
+
+	auctionGroup := apiGroup.Group("/auctions")
+	{
+		auctionGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			auctionGroup.POST("", api.SubmitAuction)
+			auctionGroup.GET("", api.ListAuction)
 		}
 	}
 

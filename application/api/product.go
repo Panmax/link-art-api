@@ -139,7 +139,7 @@ func TakeOffProduct(c *gin.Context) {
 	utilGin.SuccessResponse(true)
 }
 
-func ListAllCategory(c *gin.Context) {
+func ListCategoryTree(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
 	categories, err := service.ListAllCategory()
@@ -149,4 +149,17 @@ func ListAllCategory(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(categories)
+}
+
+func SubmitAuction(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	// TODO parse SubmitAuctionCommand
+	utilGin.SuccessResponse(true)
+}
+
+func ListAuction(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	// TODO return []AuctionRepresentation
+	// TODO filter by type
+	utilGin.SuccessResponse(true)
 }

@@ -21,3 +21,14 @@ func (c *CreateProductCommand) GetDetailPicsJson() (string, error) {
 	picsJson, err := json.Marshal(c.DetailPics)
 	return string(picsJson), err
 }
+
+type SubmitAuctionCommand struct {
+	StartTime int64        `json:"start_time"`
+	Type      uint8        `json:"type"`
+	Bids      []BidCommand `json:"bids"`
+}
+
+type BidCommand struct {
+	ProductId  uint `json:"product_id"`
+	StartPrice uint `json:"start_price"`
+}
