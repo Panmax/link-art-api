@@ -6,6 +6,7 @@ import (
 	"link-art-api/application/representation"
 	"link-art-api/domain/model"
 	"link-art-api/domain/repository"
+	"time"
 )
 
 func CreateProduct(accountId uint, productCommand *command.CreateProductCommand) error {
@@ -138,4 +139,16 @@ func fillUpChild(categories []*representation.CategoryRepresentation) error {
 		}
 	}
 	return nil
+}
+
+func SubmitAuction(accountID uint, auctionCommand *command.SubmitAuctionCommand) error {
+	startTime := time.Unix(auctionCommand.StartTime, 0)
+
+	var items []*model.AuctionItem
+	for _, itemCommand := range auctionCommand.Items {
+		items = append(items, model.NewAuctionItem(itemCommand.ProductID, itemCommand.StartPrice))
+	}
+
+	auction := model.NewAuction(accountID, auctionCommand.Type, startTime, items)
+	return model.CreateOne(auction)
 }

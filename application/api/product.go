@@ -192,7 +192,7 @@ func ListCategoryTree(c *gin.Context) {
 
 func SubmitAuction(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	//account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
 	cmd, err := bind.Bind(&command.SubmitAuctionCommand{}, c)
 	if err != nil {
@@ -200,8 +200,14 @@ func SubmitAuction(c *gin.Context) {
 		return
 	}
 	submitCommand := cmd.(*command.SubmitAuctionCommand)
-	if submitCommand.Type != model.AuctionVideoType && submitCommand.Type != model.AuctionTextType {
+	if submitCommand.Type != model.AuctionLiveType && submitCommand.Type != model.AuctionTextType {
 		utilGin.ParamErrorResponse("类型错误")
+		return
+	}
+
+	err = service.SubmitAuction(account.ID, submitCommand)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
 		return
 	}
 

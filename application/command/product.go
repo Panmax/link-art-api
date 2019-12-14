@@ -26,20 +26,20 @@ func (c *CreateProductCommand) GetDetailPicsJson() (string, error) {
 }
 
 type SubmitAuctionCommand struct {
-	StartTime int64                `json:"start_time"`
-	Type      model.AuctionType    `json:"type"`
-	Items     []AuctionItemCommand `json:"items"`
+	StartTime int64                 `json:"start_time" binding:"required"`
+	Type      model.AuctionType     `json:"type" binding:"required"`
+	Items     []*AuctionItemCommand `json:"items" binding:"required"`
 }
 
 type AuctionItemCommand struct {
-	ProductID  uint `json:"product_id"`
-	StartPrice uint `json:"start_price"`
+	ProductID  uint `json:"product_id" binding:"required"`
+	StartPrice uint `json:"start_price" binding:"required"`
 }
 
 type SubmitExhibitionCommand struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	StartTime   uint64 `json:"start_time"`
-	EndTime     uint64 `json:"end_time"`
-	ProductIDs  []uint `json:"product_ids"`
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
+	StartTime   uint64 `json:"start_time" binding:"required"`
+	EndTime     uint64 `json:"end_time" binding:"required"`
+	ProductIDs  []uint `json:"product_ids" binding:"required"`
 }
