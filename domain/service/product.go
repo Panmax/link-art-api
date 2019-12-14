@@ -152,3 +152,31 @@ func SubmitAuction(accountID uint, auctionCommand *command.SubmitAuctionCommand)
 	auction := model.NewAuction(accountID, auctionCommand.Type, startTime, items)
 	return model.CreateOne(auction)
 }
+
+func ListAuction(accountId uint, auctionType model.AuctionType, status model.AuctionStatus) ([]*representation.AuctionRepresentation, error) {
+	auctions, err := repository.FindAllAuction(accountId, auctionType, status)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var results []*representation.AuctionRepresentation
+	for _, auction := range auctions {
+		auctionRepresentation, err := GetAuction(auction.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, auctionRepresentation)
+	}
+	return results, nil
+}
+
+func GetAuction(id uint) (*representation.AuctionRepresentation, error) {
+	auction, err := repository.FindAuction(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewAuctionRepresentation(auction), nil
+}

@@ -11,6 +11,7 @@ require (
 	github.com/jinzhu/gorm v1.9.11
 	github.com/json-iterator/go v1.1.8 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/labstack/gommon v0.2.8
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/qiniu/api.v7 v7.2.5+incompatible

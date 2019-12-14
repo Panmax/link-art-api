@@ -216,10 +216,18 @@ func SubmitAuction(c *gin.Context) {
 
 func ListAuction(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	// TODO return []AuctionRepresentation
-	// TODO filter by type
-	// TODO filter by user
-	utilGin.SuccessResponse(true)
+
+	accountID, _ := strconv.ParseUint(c.Query("artist_id"), 10, 64)
+	auctionType, _ := strconv.ParseUint(c.Query("type"), 10, 8)
+	status, _ := strconv.ParseUint(c.Query("status"), 10, 8)
+
+	auctions, err := service.ListAuction(uint(accountID), model.AuctionType(auctionType), model.AuctionStatus(status))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(auctions)
 }
 
 func SubmitExhibition(c *gin.Context) {

@@ -119,7 +119,7 @@ func (a AuctionItems) Value() (driver.Value, error) {
 	return json.Marshal(a)
 }
 
-func (a AuctionItems) Scan(input interface{}) error {
+func (a *AuctionItems) Scan(input interface{}) error {
 	return json.Unmarshal(input.([]byte), a)
 }
 

@@ -30,3 +30,27 @@ func FindCategory(id uint) (*model.Category, error) {
 	err := model.DB.Unscoped().First(category, id).Error
 	return category, err
 }
+
+func FindAllAuction(accountId uint, auctionType model.AuctionType, status model.AuctionStatus) ([]model.Auction, error) {
+	var auctions []model.Auction
+
+	cond := model.DB
+	if accountId != 0 {
+		cond = cond.Where("account_id = ?", accountId)
+	}
+	if auctionType != 0 {
+		cond = cond.Where("type = ?", auctionType)
+	}
+	if status != 0 {
+		cond = cond.Where("status = ?", status)
+	}
+	err := cond.Find(&auctions).Error
+
+	return auctions, err
+}
+
+func FindAuction(id uint) (*model.Auction, error) {
+	auction := &model.Auction{}
+	err := model.DB.Unscoped().First(auction, id).Error
+	return auction, err
+}

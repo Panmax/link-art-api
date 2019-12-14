@@ -60,10 +60,19 @@ func NewCategoryRepresentation(category *model.Category) *CategoryRepresentation
 }
 
 type AuctionRepresentation struct {
-	ID        uint   `json:"id"`
-	Type      uint8  `json:"type"`
-	StartTime uint64 `json:"start_time"`
-	Status    uint8  `json:"status"`
+	ID        uint                `json:"id"`
+	Type      model.AuctionType   `json:"type"`
+	StartTime int64               `json:"start_time"`
+	Status    model.AuctionStatus `json:"status"`
+}
+
+func NewAuctionRepresentation(auction *model.Auction) *AuctionRepresentation {
+	return &AuctionRepresentation{
+		ID:        auction.ID,
+		Type:      auction.Type,
+		StartTime: auction.StartTime.Unix(),
+		Status:    auction.Status,
+	}
 }
 
 type AuctionProductRepresentation struct {
