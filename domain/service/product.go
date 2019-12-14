@@ -160,7 +160,7 @@ func ListAuction(accountId uint, auctionType model.AuctionType, status model.Auc
 		return nil, err
 	}
 
-	var results []*representation.AuctionRepresentation
+	results := make([]*representation.AuctionRepresentation, 0)
 	for _, auction := range auctions {
 		auctionRepresentation, err := GetAuction(auction.ID)
 		if err != nil {
