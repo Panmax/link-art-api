@@ -13,14 +13,15 @@ import (
 )
 
 func ProductRouterRegister(group *gin.RouterGroup) {
+	group.GET("/categories", ListCategoryTree)
+
 	productGroup := group.Group("/products")
 	{
-		productGroup.GET("/categories", ListCategoryTree)
-
 		productGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			productGroup.POST("", CreateProduct)
 			productGroup.PUT("/:id", UpdateProduct)
+			productGroup.GET("/:id", GetProduct)
 			productGroup.GET("", ListAccountProduct)
 			productGroup.POST("/:id/shelves", ShelvesProduct)
 			productGroup.POST("/:id/take-off", TakeOffProduct)
@@ -160,8 +161,8 @@ func ShelvesProduct(c *gin.Context) {
 
 func TakeOffProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
 	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())

@@ -138,9 +138,9 @@ func SubmitApproval(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
-	cmd, e := bind.Bind(&command.SubmitApprovalCommand{}, c)
-	if e != nil {
-		utilGin.ParamErrorResponse(e.Error())
+	cmd, err := bind.Bind(&command.SubmitApprovalCommand{}, c)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
 		return
 	}
 	submitCommand := cmd.(*command.SubmitApprovalCommand)
