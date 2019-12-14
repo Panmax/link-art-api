@@ -33,6 +33,7 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Approval{})
 	db.AutoMigrate(&Product{})
 	db.AutoMigrate(&Category{})
+	db.AutoMigrate(&Auction{})
 }
 
 // Setup initializes the database instance

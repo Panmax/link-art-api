@@ -1,6 +1,9 @@
 package command
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"link-art-api/domain/model"
+)
 
 type CreateProductCommand struct {
 	Name        string   `json:"name" binding:"required"`
@@ -23,12 +26,12 @@ func (c *CreateProductCommand) GetDetailPicsJson() (string, error) {
 }
 
 type SubmitAuctionCommand struct {
-	StartTime int64        `json:"start_time"`
-	Type      uint8        `json:"type"`
-	Bids      []BidCommand `json:"bids"`
+	StartTime int64                `json:"start_time"`
+	Type      model.AuctionType    `json:"type"`
+	Items     []AuctionItemCommand `json:"items"`
 }
 
-type BidCommand struct {
+type AuctionItemCommand struct {
 	ProductID  uint `json:"product_id"`
 	StartPrice uint `json:"start_price"`
 }

@@ -1,5 +1,11 @@
 package model
 
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+)
+
 type Product struct {
 	Model
 
@@ -70,4 +76,44 @@ type Category struct {
 	Name     string `gorm:"size:64;not null"`
 	ParentId *uint
 	Sort     int `gorm:"not null"`
+}
+
+const (
+	AuctionVideoType AuctionType = 1
+	AuctionTextType  AuctionType = 2
+)
+
+type AuctionType uint8
+
+const (
+	AuctionUnprocessedStatus AuctionStatus = 0
+	AuctionPassStatus        AuctionStatus = 1
+	AuctionRejectStatus      AuctionStatus = 2
+)
+
+type AuctionStatus uint8
+
+type Auction struct {
+	Model
+
+	AccountId uint           `gorm:"not null"`
+	Type      AuctionType    `gorm:"not null"`
+	Status    AuctionStatus  `gorm:"not null"`
+	StartTime time.Time      `gorm:"not null"`
+	Items     []AuctionItems `gorm:"type:json;not null"`
+}
+
+type AuctionItems []AuctionItem
+
+func (a *AuctionItems) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+func (a *AuctionItems) Scan(input interface{}) error {
+	return json.Unmarshal(input.([]byte), a)
+}
+
+type AuctionItem struct {
+	ProductID  uint `json:"product_id"`
+	StartPrice uint `json:"start_price"`
 }

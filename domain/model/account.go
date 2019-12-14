@@ -46,7 +46,7 @@ const (
 type Approval struct {
 	Model
 
-	AccountId   uint           `gorm:"not null;unique_index"`
+	AccountId   uint           `gorm:"not null"`
 	Type        ApprovalType   `gorm:"not null"`
 	CompanyName *string        `gorm:"size:64"`
 	Photo       string         `gorm:"size:512;not null"`
@@ -100,5 +100,5 @@ func (a *Approval) Pass() {
 }
 
 func (a *Approval) Reject() {
-	a.Status = ApprovalPassStatus
+	a.Status = ApprovalRejectStatus
 }

@@ -192,7 +192,19 @@ func ListCategoryTree(c *gin.Context) {
 
 func SubmitAuction(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	// TODO parse SubmitAuctionCommand
+	//account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
+	cmd, err := bind.Bind(&command.SubmitAuctionCommand{}, c)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+	submitCommand := cmd.(*command.SubmitAuctionCommand)
+	if submitCommand.Type != model.AuctionVideoType && submitCommand.Type != model.AuctionTextType {
+		utilGin.ParamErrorResponse("类型错误")
+		return
+	}
+
 	utilGin.SuccessResponse(true)
 }
 
