@@ -29,6 +29,14 @@ type SubmitAuctionCommand struct {
 }
 
 type BidCommand struct {
-	ProductId  uint `json:"product_id"`
+	ProductID  uint `json:"product_id"`
 	StartPrice uint `json:"start_price"`
+}
+
+type SubmitExhibitionCommand struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	StartTime   uint64 `json:"start_time"`
+	EndTime     uint64 `json:"end_time"`
+	ProductIDs  []uint `json:"product_ids"`
 }

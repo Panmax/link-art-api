@@ -27,6 +27,7 @@ func Setup(engine *gin.Engine) {
 
 	api.ProductRouterRegister(apiGroup)
 	api.AuctionRouterRegister(apiGroup)
+	api.ExhibitionRouterRegister(apiGroup)
 
 	api.CommonRouterRegister(apiGroup)
 

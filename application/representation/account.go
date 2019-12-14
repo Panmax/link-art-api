@@ -1,6 +1,7 @@
 package representation
 
 type AccountProfileRepresentation struct {
+	ID        uint    `json:"id"`
 	Name      string  `json:"name"`
 	Avatar    *string `json:"avatar"`
 	Phone     string  `json:"phone"`
@@ -11,4 +12,10 @@ type AccountProfileRepresentation struct {
 	Fans      int     `json:"fans_count"`
 	Points    int     `json:"points"`
 	Artist    bool    `json:"points"`
+}
+
+type ArtistRepresentation struct {
+	ID     uint    `json:"id"`
+	Name   string  `json:"name"`
+	Avatar *string `json:"avatar"`
 }

@@ -80,6 +80,7 @@ func Profile(c *gin.Context) {
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
 	profile := &representation.AccountProfileRepresentation{}
+	profile.ID = account.ID
 	profile.Name = account.Name
 	profile.Avatar = account.Avatar
 	profile.Phone = account.Phone

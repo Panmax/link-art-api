@@ -39,6 +39,17 @@ func AuctionRouterRegister(group *gin.RouterGroup) {
 	}
 }
 
+func ExhibitionRouterRegister(group *gin.RouterGroup) {
+	exhibitionGroup := group.Group("/exhibitions")
+	{
+		exhibitionGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			exhibitionGroup.POST("", SubmitExhibition)
+			exhibitionGroup.GET("", ListExhibition)
+		}
+	}
+}
+
 func CreateProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
@@ -188,5 +199,17 @@ func ListAuction(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	// TODO return []AuctionRepresentation
 	// TODO filter by type
+	// TODO filter by user
+	utilGin.SuccessResponse(true)
+}
+
+func SubmitExhibition(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	utilGin.SuccessResponse(true)
+}
+
+func ListExhibition(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	// TODO filter by user
 	utilGin.SuccessResponse(true)
 }

@@ -70,3 +70,13 @@ type AuctionProductRepresentation struct {
 	Product    ProductRepresentation `json:"product"`
 	StartPrice uint                  `json:"start_price"`
 }
+
+type ExhibitionRepresentation struct {
+	ID          uint                 `json:"id"`
+	Title       string               `json:"title"`
+	Description string               `json:"description"`
+	Artist      ArtistRepresentation `json:"artist"`
+	StartTime   uint64               `json:"start_time"`
+	EndTime     uint64               `json:"end_time"`
+	Status      uint8                `json:"status"`
+}
