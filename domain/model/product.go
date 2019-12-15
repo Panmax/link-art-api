@@ -134,3 +134,45 @@ func NewAuctionItem(productID, startPrice uint) *AuctionItem {
 		StartPrice: startPrice,
 	}
 }
+
+const (
+	ExhibitionUnprocessedStatus ExhibitionStatus = 0
+	ExhibitionPassStatus        ExhibitionStatus = 1
+	ExhibitionRejectStatus      ExhibitionStatus = 2
+)
+
+type ExhibitionStatus uint8
+
+type Exhibition struct {
+	Model
+
+	AccountId   uint             `gorm:"not null"`
+	Title       string           `gorm:"size:64;not null"`
+	Description string           `gorm:"size:512;not null"`
+	Status      ExhibitionStatus `gorm:"not null"`
+	StartTime   time.Time        `gorm:"not null"`
+	EndTime     time.Time        `gorm:"not null"`
+	ProductIDs  uintSlice        `gorm:"column:product_ids;type:json;not null"`
+}
+
+type uintSlice []uint
+
+func (a uintSlice) Value() (driver.Value, error) {
+	return json.Marshal(a)
+}
+
+func (a *uintSlice) Scan(input interface{}) error {
+	return json.Unmarshal(input.([]byte), a)
+}
+
+func NewExhibition(accountId uint, title string, description string, startTime, endTime time.Time, productIDs []uint) *Exhibition {
+	return &Exhibition{
+		AccountId:   accountId,
+		Title:       title,
+		Description: description,
+		Status:      ExhibitionUnprocessedStatus,
+		StartTime:   startTime,
+		EndTime:     endTime,
+		ProductIDs:  productIDs,
+	}
+}

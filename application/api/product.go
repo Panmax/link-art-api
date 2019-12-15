@@ -10,6 +10,7 @@ import (
 	"link-art-api/infrastructure/util/bind"
 	"link-art-api/infrastructure/util/response"
 	"strconv"
+	"time"
 )
 
 func ProductRouterRegister(group *gin.RouterGroup) {
@@ -232,6 +233,34 @@ func ListAuction(c *gin.Context) {
 
 func SubmitExhibition(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
+
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
+	cmd, err := bind.Bind(&command.SubmitExhibitionCommand{}, c)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+	submitCommand := cmd.(*command.SubmitExhibitionCommand)
+	if submitCommand.StartTime > submitCommand.EndTime {
+		utilGin.ParamErrorResponse("开始时间必须小于结束时间")
+		return
+	}
+	if submitCommand.StartTime < time.Now().Unix() {
+		utilGin.ParamErrorResponse("开始时间错误")
+		return
+	}
+	if len(submitCommand.ProductIDs) <= 0 {
+		utilGin.ParamErrorResponse("个展商品不能为空")
+		return
+	}
+
+	err = service.SubmitExhibition(account.ID, submitCommand)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
 	utilGin.SuccessResponse(true)
 }
 

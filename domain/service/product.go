@@ -141,15 +141,15 @@ func fillUpChild(categories []*representation.CategoryRepresentation) error {
 	return nil
 }
 
-func SubmitAuction(accountID uint, auctionCommand *command.SubmitAuctionCommand) error {
-	startTime := time.Unix(auctionCommand.StartTime, 0)
+func SubmitAuction(accountID uint, submitCommand *command.SubmitAuctionCommand) error {
+	startTime := time.Unix(submitCommand.StartTime, 0)
 
 	var items []*model.AuctionItem
-	for _, itemCommand := range auctionCommand.Items {
+	for _, itemCommand := range submitCommand.Items {
 		items = append(items, model.NewAuctionItem(itemCommand.ProductID, itemCommand.StartPrice))
 	}
 
-	auction := model.NewAuction(accountID, auctionCommand.Type, startTime, items)
+	auction := model.NewAuction(accountID, submitCommand.Type, startTime, items)
 	return model.CreateOne(auction)
 }
 
@@ -179,4 +179,21 @@ func GetAuction(id uint) (*representation.AuctionRepresentation, error) {
 	}
 
 	return representation.NewAuctionRepresentation(auction), nil
+}
+
+func SubmitExhibition(accountID uint, submitCommand *command.SubmitExhibitionCommand) error {
+	startTime := time.Unix(submitCommand.StartTime, 0)
+	endTime := time.Unix(submitCommand.EndTime, 0)
+
+	for _, productID := range submitCommand.ProductIDs {
+		product, err := repository.FindProduct(productID)
+		if err != nil {
+			return err
+		} else if product.AccountId != accountID {
+			return errors.New("加入个展商品有误")
+		}
+	}
+
+	exhibition := model.NewExhibition(accountID, submitCommand.Title, submitCommand.Description, startTime, endTime, submitCommand.ProductIDs)
+	return model.CreateOne(exhibition)
 }

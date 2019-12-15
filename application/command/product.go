@@ -39,7 +39,7 @@ type AuctionItemCommand struct {
 type SubmitExhibitionCommand struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
-	StartTime   uint64 `json:"start_time" binding:"required"`
-	EndTime     uint64 `json:"end_time" binding:"required"`
+	StartTime   int64  `json:"start_time" binding:"required"`
+	EndTime     int64  `json:"end_time" binding:"required"`
 	ProductIDs  []uint `json:"product_ids" binding:"required"`
 }

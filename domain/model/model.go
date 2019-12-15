@@ -34,6 +34,7 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Product{})
 	db.AutoMigrate(&Category{})
 	db.AutoMigrate(&Auction{})
+	db.AutoMigrate(&Exhibition{})
 }
 
 // Setup initializes the database instance

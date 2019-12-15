@@ -7,6 +7,7 @@ import (
 
 type ProductRepresentation struct {
 	Id          uint                    `json:"id"`
+	Artist      *ArtistRepresentation   `json:"artist"`
 	Name        string                  `json:"name"`
 	Category    *CategoryRepresentation `json:"category"`
 	Self        bool                    `json:"self"`
@@ -26,8 +27,15 @@ func NewProductRepresentation(product *model.Product, category *model.Category) 
 	var detailPics []string
 	_ = json.Unmarshal([]byte(product.DetailsPicsJson), &detailPics)
 
+	artist := &ArtistRepresentation{
+		ID:     product.AccountId,
+		Name:   "",  // TODO
+		Avatar: nil, // TODO
+	}
+
 	productRepresentation := &ProductRepresentation{
 		Id:          product.ID,
+		Artist:      artist,
 		Name:        product.Name,
 		Category:    NewCategoryRepresentation(category),
 		Self:        product.Self,
