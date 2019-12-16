@@ -43,3 +43,9 @@ type SubmitExhibitionCommand struct {
 	EndTime     int64  `json:"end_time" binding:"required"`
 	ProductIDs  []uint `json:"product_ids" binding:"required"`
 }
+
+const (
+	ExhibitionActionInProcess int8 = 1
+	ExhibitionActionSoon      int8 = 2
+	ExhibitionActionEnd       int8 = 3
+)

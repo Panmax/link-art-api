@@ -54,3 +54,24 @@ func FindAuction(id uint) (*model.Auction, error) {
 	err := model.DB.Unscoped().First(auction, id).Error
 	return auction, err
 }
+
+func FindAllExhibition(accountId uint, status model.ExhibitionStatus) ([]model.Exhibition, error) {
+	var exhibitions []model.Exhibition
+
+	cond := model.DB
+	if accountId != 0 {
+		cond = cond.Where("account_id = ?", accountId)
+	}
+	if status != 0 {
+		cond = cond.Where("status = ?", status)
+	}
+	err := cond.Find(&exhibitions).Error
+
+	return exhibitions, err
+}
+
+func FindExhibition(id uint) (*model.Exhibition, error) {
+	exhibition := &model.Exhibition{}
+	err := model.DB.Unscoped().First(exhibition, id).Error
+	return exhibition, err
+}

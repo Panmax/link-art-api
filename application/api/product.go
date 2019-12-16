@@ -266,6 +266,15 @@ func SubmitExhibition(c *gin.Context) {
 
 func ListExhibition(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	// TODO filter by user
-	utilGin.SuccessResponse(true)
+
+	accountID, _ := strconv.ParseUint(c.Query("artist_id"), 10, 64)
+	action, _ := strconv.ParseInt(c.Query("action"), 10, 8)
+
+	exhibition, err := service.ListExhibition(uint(accountID), int8(action))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(exhibition)
 }

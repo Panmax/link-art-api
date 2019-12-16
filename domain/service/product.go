@@ -197,3 +197,36 @@ func SubmitExhibition(accountID uint, submitCommand *command.SubmitExhibitionCom
 	exhibition := model.NewExhibition(accountID, submitCommand.Title, submitCommand.Description, startTime, endTime, submitCommand.ProductIDs)
 	return model.CreateOne(exhibition)
 }
+
+func ListExhibition(accountId uint, action int8) ([]*representation.ExhibitionRepresentation, error) {
+	exhibitions, err := repository.FindAllExhibition(accountId, model.ExhibitionPassStatus)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*representation.ExhibitionRepresentation, 0)
+	for _, exhibition := range exhibitions {
+		exhibitionRepresentation, err := GetExhibition(exhibition.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		if action != 0 {
+			if exhibitionRepresentation.Action != action {
+				continue
+			}
+		}
+		results = append(results, exhibitionRepresentation)
+	}
+
+	return results, nil
+}
+
+func GetExhibition(id uint) (*representation.ExhibitionRepresentation, error) {
+	exhibition, err := repository.FindExhibition(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewExhibitionRepresentation(exhibition), nil
+}

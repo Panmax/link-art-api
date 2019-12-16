@@ -2,7 +2,9 @@ package representation
 
 import (
 	"encoding/json"
+	"link-art-api/application/command"
 	"link-art-api/domain/model"
+	"time"
 )
 
 type ProductRepresentation struct {
@@ -89,11 +91,36 @@ type AuctionProductRepresentation struct {
 }
 
 type ExhibitionRepresentation struct {
-	ID          uint                 `json:"id"`
-	Title       string               `json:"title"`
-	Description string               `json:"description"`
-	Artist      ArtistRepresentation `json:"artist"`
-	StartTime   uint64               `json:"start_time"`
-	EndTime     uint64               `json:"end_time"`
-	Status      uint8                `json:"status"`
+	ID          uint                   `json:"id"`
+	Title       string                 `json:"title"`
+	Description string                 `json:"description"`
+	Artist      *ArtistRepresentation  `json:"artist"`
+	StartTime   int64                  `json:"start_time"`
+	EndTime     int64                  `json:"end_time"`
+	Status      model.ExhibitionStatus `json:"status"`
+	Action      int8                   `json:"action"`
+}
+
+func NewExhibitionRepresentation(exhibition *model.Exhibition) *ExhibitionRepresentation {
+	var action int8
+
+	now := time.Now()
+	if now.Before(exhibition.StartTime) {
+		action = command.ExhibitionActionSoon
+	} else if now.After(exhibition.EndTime) {
+		action = command.ExhibitionActionEnd
+	} else {
+		action = command.ExhibitionActionInProcess
+	}
+
+	return &ExhibitionRepresentation{
+		ID:          exhibition.ID,
+		Title:       exhibition.Title,
+		Description: exhibition.Description,
+		Artist:      nil, // TODO
+		StartTime:   exhibition.StartTime.Unix(),
+		EndTime:     exhibition.EndTime.Unix(),
+		Status:      exhibition.Status,
+		Action:      action,
+	}
 }
