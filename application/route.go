@@ -7,7 +7,7 @@ import (
 	"link-art-api/infrastructure/util/response"
 )
 
-func Setup(engine *gin.Engine) {
+func SetupRoute(engine *gin.Engine) {
 	engine.Use(middleware.NewRequestIdMiddleware())
 
 	//404

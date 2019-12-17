@@ -24,7 +24,8 @@ func init() {
 func main() {
 	gin.SetMode(config.ServerConfig.Mode)
 	engine := gin.Default()
-	application.Setup(engine)
+	application.SetupRoute(engine)
+	application.SetupSchedule()
 
 	Port := fmt.Sprintf(":%d", config.ServerConfig.Port)
 	server := &http.Server{

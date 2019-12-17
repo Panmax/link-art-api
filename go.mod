@@ -15,6 +15,7 @@ require (
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/qiniu/api.v7 v7.2.5+incompatible
 	github.com/qiniu/x v7.0.8+incompatible // indirect
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/net v0.0.0-20191207000613-e7e4b65ae663 // indirect
