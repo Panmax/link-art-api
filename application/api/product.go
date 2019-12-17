@@ -48,6 +48,8 @@ func ExhibitionRouterRegister(group *gin.RouterGroup) {
 		{
 			exhibitionGroup.POST("", SubmitExhibition)
 			exhibitionGroup.GET("", ListExhibition)
+			exhibitionGroup.GET("/:id", GetExhibitionInfo)
+			exhibitionGroup.GET("/:id/products", ListExhibitionProduct)
 		}
 	}
 }
@@ -277,4 +279,40 @@ func ListExhibition(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(exhibition)
+}
+
+func GetExhibitionInfo(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	exhibitionId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	exhibitionRepresentation, err := service.GetExhibition(uint(exhibitionId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(exhibitionRepresentation)
+}
+
+func ListExhibitionProduct(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	exhibitionId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	products, err := service.ListExhibitionProduct(uint(exhibitionId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(products)
 }

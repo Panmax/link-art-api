@@ -68,14 +68,25 @@ type AuctionRepresentation struct {
 	Type      model.AuctionType   `json:"type"`
 	StartTime int64               `json:"start_time"`
 	Status    model.AuctionStatus `json:"status"`
+	Action    int8                `json:"action"`
 }
 
 func NewAuctionRepresentation(auction *model.Auction) *AuctionRepresentation {
+	var action int8
+
+	now := time.Now()
+	if now.Before(auction.StartTime) {
+		action = command.ExhibitionActionSoon
+	} else {
+		action = command.ExhibitionActionInProcess
+	} // TODO END
+
 	return &AuctionRepresentation{
 		ID:        auction.ID,
 		Type:      auction.Type,
 		StartTime: auction.StartTime.Unix(),
 		Status:    auction.Status,
+		Action:    action,
 	}
 }
 

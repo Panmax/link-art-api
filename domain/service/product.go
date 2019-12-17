@@ -165,7 +165,7 @@ func ListAuction(accountId uint, auctionType model.AuctionType, status model.Auc
 		return nil, err
 	}
 
-	results := make([]*representation.AuctionRepresentation, 0)
+	results := make([]*representation.AuctionRepresentation, len(auctions))
 	for _, auction := range auctions {
 		auctionRepresentation, err := GetAuction(auction.ID)
 		if err != nil {
@@ -239,4 +239,23 @@ func GetExhibition(id uint) (*representation.ExhibitionRepresentation, error) {
 	}
 
 	return representation.NewExhibitionRepresentation(exhibition, artist), nil
+}
+
+func ListExhibitionProduct(id uint) ([]*representation.ProductRepresentation, error) {
+	exhibition, err := repository.FindExhibition(id)
+	if err != nil {
+		return nil, err
+	}
+
+	products := make([]*representation.ProductRepresentation, len(exhibition.ProductIDs))
+	for _, productId := range exhibition.ProductIDs {
+		product, err := GetProduct(productId)
+		if err != nil {
+			return nil, err
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
 }

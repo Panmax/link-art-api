@@ -45,6 +45,12 @@ type SubmitExhibitionCommand struct {
 }
 
 const (
+	AuctionActionInProcess int8 = 1
+	AuctionActionSoon      int8 = 2
+	AuctionActionEnd       int8 = 3
+)
+
+const (
 	ExhibitionActionInProcess int8 = 1
 	ExhibitionActionSoon      int8 = 2
 	ExhibitionActionEnd       int8 = 3
