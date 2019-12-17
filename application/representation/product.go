@@ -24,16 +24,10 @@ type ProductRepresentation struct {
 	Description string                  `json:"description"`
 }
 
-func NewProductRepresentation(product *model.Product, category *model.Category) *ProductRepresentation {
+func NewProductRepresentation(product *model.Product, category *model.Category, artist *ArtistRepresentation) *ProductRepresentation {
 
 	var detailPics []string
 	_ = json.Unmarshal([]byte(product.DetailsPicsJson), &detailPics)
-
-	artist := &ArtistRepresentation{
-		ID:     product.AccountId,
-		Name:   "",  // TODO
-		Avatar: nil, // TODO
-	}
 
 	productRepresentation := &ProductRepresentation{
 		Id:          product.ID,
@@ -101,7 +95,7 @@ type ExhibitionRepresentation struct {
 	Action      int8                   `json:"action"`
 }
 
-func NewExhibitionRepresentation(exhibition *model.Exhibition) *ExhibitionRepresentation {
+func NewExhibitionRepresentation(exhibition *model.Exhibition, artist *ArtistRepresentation) *ExhibitionRepresentation {
 	var action int8
 
 	now := time.Now()
@@ -117,7 +111,7 @@ func NewExhibitionRepresentation(exhibition *model.Exhibition) *ExhibitionRepres
 		ID:          exhibition.ID,
 		Title:       exhibition.Title,
 		Description: exhibition.Description,
-		Artist:      nil, // TODO
+		Artist:      artist,
 		StartTime:   exhibition.StartTime.Unix(),
 		EndTime:     exhibition.EndTime.Unix(),
 		Status:      exhibition.Status,

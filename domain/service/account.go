@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/jinzhu/gorm"
 	"link-art-api/application/command"
+	"link-art-api/application/representation"
 	"link-art-api/domain/model"
 	"link-art-api/domain/repository"
 	"time"
@@ -64,12 +65,12 @@ func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand
 func ApprovalPass(id uint) error {
 	approval, err := repository.FundApproval(id)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	account, err := repository.FindAccount(approval.AccountId)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	approval.Pass()
@@ -84,12 +85,12 @@ func ApprovalPass(id uint) error {
 func ApprovalReject(id uint) error {
 	approval, err := repository.FundApproval(id)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	account, err := repository.FindAccount(approval.AccountId)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	approval.Reject()
@@ -99,4 +100,18 @@ func ApprovalReject(id uint) error {
 	tx.Save(approval)
 	tx.Save(account)
 	return tx.Commit().Error
+}
+
+func GetArtist(accountId uint) (*representation.ArtistRepresentation, error) {
+	account, err := repository.FindAccount(accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	artist := &representation.ArtistRepresentation{
+		ID:     account.ID,
+		Name:   account.Name,
+		Avatar: account.Avatar,
+	}
+	return artist, nil
 }

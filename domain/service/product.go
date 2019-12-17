@@ -72,7 +72,12 @@ func GetProduct(id uint) (*representation.ProductRepresentation, error) {
 		return nil, err
 	}
 
-	return representation.NewProductRepresentation(product, category), nil
+	artist, err := GetArtist(product.AccountId)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewProductRepresentation(product, category, artist), nil
 }
 
 func ShelvesProduct(id uint, accountId *uint) error {
@@ -228,5 +233,10 @@ func GetExhibition(id uint) (*representation.ExhibitionRepresentation, error) {
 		return nil, err
 	}
 
-	return representation.NewExhibitionRepresentation(exhibition), nil
+	artist, err := GetArtist(exhibition.AccountId)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewExhibitionRepresentation(exhibition, artist), nil
 }
