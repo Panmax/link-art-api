@@ -158,20 +158,25 @@ func SubmitAuction(accountID uint, submitCommand *command.SubmitAuctionCommand) 
 	return model.CreateOne(auction)
 }
 
-func ListAuction(accountId uint, auctionType model.AuctionType, status model.AuctionStatus) ([]*representation.AuctionRepresentation, error) {
+func ListAuction(accountId uint, auctionType model.AuctionType, status model.AuctionStatus, action int8) ([]*representation.AuctionRepresentation, error) {
 	auctions, err := repository.FindAllAuction(accountId, auctionType, status)
 
 	if err != nil {
 		return nil, err
 	}
 
-	results := make([]*representation.AuctionRepresentation, len(auctions))
+	results := make([]*representation.AuctionRepresentation, 0)
 	for _, auction := range auctions {
 		auctionRepresentation, err := GetAuction(auction.ID)
 		if err != nil {
 			return nil, err
 		}
 
+		if action != 0 { // 说明不需要过滤
+			if auctionRepresentation.Action != action {
+				continue
+			}
+		}
 		results = append(results, auctionRepresentation)
 	}
 	return results, nil
@@ -204,7 +209,7 @@ func SubmitExhibition(accountID uint, submitCommand *command.SubmitExhibitionCom
 }
 
 func ListExhibition(accountId uint, action int8) ([]*representation.ExhibitionRepresentation, error) {
-	exhibitions, err := repository.FindAllExhibition(accountId, model.ExhibitionPassStatus)
+	exhibitions, err := repository.FindAllExhibition(accountId, model.ExhibitionPassStatus) // 只展示已通过的
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +221,7 @@ func ListExhibition(accountId uint, action int8) ([]*representation.ExhibitionRe
 			return nil, err
 		}
 
-		if action != 0 {
+		if action != 0 { // 说明不需要过滤
 			if exhibitionRepresentation.Action != action {
 				continue
 			}
@@ -247,7 +252,7 @@ func ListExhibitionProduct(id uint) ([]*representation.ProductRepresentation, er
 		return nil, err
 	}
 
-	products := make([]*representation.ProductRepresentation, len(exhibition.ProductIDs))
+	products := make([]*representation.ProductRepresentation, 0)
 	for _, productId := range exhibition.ProductIDs {
 		product, err := GetProduct(productId)
 		if err != nil {

@@ -101,6 +101,7 @@ type Auction struct {
 	Status    AuctionStatus `gorm:"not null"`
 	StartTime time.Time     `gorm:"not null"`
 	Items     AuctionItems  `gorm:"type:json;not null"`
+	End       bool          `gorm:"not null"`
 }
 
 func NewAuction(accountId uint, auctionType AuctionType, startTime time.Time, items []*AuctionItem) *Auction {
@@ -110,6 +111,7 @@ func NewAuction(accountId uint, auctionType AuctionType, startTime time.Time, it
 		Status:    AuctionUnprocessedStatus,
 		StartTime: startTime,
 		Items:     items,
+		End:       false,
 	}
 }
 

@@ -223,8 +223,9 @@ func ListAuction(c *gin.Context) {
 	accountID, _ := strconv.ParseUint(c.Query("artist_id"), 10, 64)
 	auctionType, _ := strconv.ParseUint(c.Query("type"), 10, 8)
 	status, _ := strconv.ParseUint(c.Query("status"), 10, 8)
+	action, _ := strconv.ParseInt(c.Query("action"), 10, 8)
 
-	auctions, err := service.ListAuction(uint(accountID), model.AuctionType(auctionType), model.AuctionStatus(status))
+	auctions, err := service.ListAuction(uint(accountID), model.AuctionType(auctionType), model.AuctionStatus(status), int8(action))
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return

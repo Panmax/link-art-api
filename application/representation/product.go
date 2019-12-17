@@ -75,11 +75,13 @@ func NewAuctionRepresentation(auction *model.Auction) *AuctionRepresentation {
 	var action int8
 
 	now := time.Now()
-	if now.Before(auction.StartTime) {
-		action = command.ExhibitionActionSoon
+	if auction.End {
+		action = command.AuctionActionEnd
+	} else if now.Before(auction.StartTime) {
+		action = command.AuctionActionSoon
 	} else {
-		action = command.ExhibitionActionInProcess
-	} // TODO END
+		action = command.AuctionActionInProcess
+	}
 
 	return &AuctionRepresentation{
 		ID:        auction.ID,
