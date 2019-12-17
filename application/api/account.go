@@ -8,6 +8,7 @@ import (
 	"link-art-api/domain/service"
 	"link-art-api/infrastructure/util/bind"
 	"link-art-api/infrastructure/util/response"
+	"strconv"
 )
 
 func AuthRouterRegister(group *gin.RouterGroup) {
@@ -33,6 +34,18 @@ func AccountRouterRegister(group *gin.RouterGroup) {
 		accountGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
 			accountGroup.POST("/approval", SubmitApproval)
+		}
+	}
+}
+
+func ArtistRouterRegister(group *gin.RouterGroup) {
+	artistGroup := group.Group("/artists")
+	{
+		artistGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		{
+			artistGroup.GET("/:id", GetArtist)
+			artistGroup.POST("/:id/follow", Follow)
+			artistGroup.DELETE("/:id/follow", UnFollow)
 		}
 	}
 }
@@ -146,5 +159,35 @@ func SubmitApproval(c *gin.Context) {
 		return
 	}
 
+	utilGin.SuccessResponse(true)
+}
+
+func GetArtist(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	accountID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	artist, err := service.GetArtist(uint(accountID))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(artist)
+}
+
+func Follow(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	// TODO
+	utilGin.SuccessResponse(true)
+}
+
+func UnFollow(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	// TODO
 	utilGin.SuccessResponse(true)
 }

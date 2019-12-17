@@ -24,6 +24,7 @@ func Setup(engine *gin.Engine) {
 	apiGroup := engine.Group("/api")
 	api.AuthRouterRegister(apiGroup)
 	api.AccountRouterRegister(apiGroup)
+	api.ArtistRouterRegister(apiGroup)
 
 	api.ProductRouterRegister(apiGroup)
 	api.AuctionRouterRegister(apiGroup)
