@@ -24,6 +24,20 @@ func AccountRegister(phone, password string) (*model.Account, error) {
 	return account, nil
 }
 
+func GetProfile(id uint) (*representation.AccountProfileRepresentation, error) {
+	account, err := repository.FindAccount(id)
+	if err != nil {
+		return nil, err
+	}
+
+	profile := representation.NewAccountProfileRepresentation(account,
+		len(ListAccountFollow(account.ID)),
+		len(ListAccountFans(account.ID)),
+		GetAccountPoints(id))
+
+	return profile, nil
+}
+
 func UpdateProfile(id uint, updateCommand *command.UpdateProfileCommand) (bool, error) {
 	account, err := repository.FindAccount(id)
 	if err != nil {
@@ -45,11 +59,15 @@ func UpdateProfile(id uint, updateCommand *command.UpdateProfileCommand) (bool, 
 }
 
 func ListAccountFollow(id uint) []map[string]string {
-	return make([]map[string]string, 0)
+	return make([]map[string]string, 0) // TODO
 }
 
 func ListAccountFans(id uint) []map[string]string {
-	return make([]map[string]string, 0)
+	return make([]map[string]string, 0) // TODO
+}
+
+func GetAccountPoints(id uint) uint {
+	return 0 // TODO
 }
 
 func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand) error {

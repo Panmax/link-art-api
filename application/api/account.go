@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"link-art-api/application/command"
 	"link-art-api/application/middleware"
-	"link-art-api/application/representation"
 	"link-art-api/domain/model"
 	"link-art-api/domain/service"
 	"link-art-api/infrastructure/util/bind"
@@ -79,19 +78,12 @@ func Profile(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
 
-	profile := &representation.AccountProfileRepresentation{}
-	profile.ID = account.ID
-	profile.Name = account.Name
-	profile.Avatar = account.Avatar
-	profile.Phone = account.Phone
-	if account.Birth != nil {
-		birthUnix := account.Birth.Unix()
-		profile.Birth = &birthUnix
+	profile, err := service.GetProfile(account.ID)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
 	}
-	profile.Gender = account.Gender
-	profile.Follow = len(service.ListAccountFollow(account.ID))
-	profile.Fans = len(service.ListAccountFans(account.ID))
-	profile.Points = 10
+
 	utilGin.SuccessResponse(profile)
 }
 
