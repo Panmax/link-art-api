@@ -30,6 +30,7 @@ func CreateOne(data interface{}) error {
 
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&FollowFlow{})
 	db.AutoMigrate(&Approval{})
 	db.AutoMigrate(&Product{})
 	db.AutoMigrate(&Category{})

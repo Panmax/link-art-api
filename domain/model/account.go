@@ -102,3 +102,10 @@ func (a *Approval) Pass() {
 func (a *Approval) Reject() {
 	a.Status = ApprovalRejectStatus
 }
+
+type FollowFlow struct {
+	Model
+
+	AccountId  uint `gorm:"not null"`
+	FollowerId uint `gorm:"not null"`
+}

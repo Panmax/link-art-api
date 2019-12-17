@@ -182,12 +182,34 @@ func GetArtist(c *gin.Context) {
 
 func Follow(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	// TODO
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
+	followerID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	if err := service.Follow(account.ID, uint(followerID)); err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
 	utilGin.SuccessResponse(true)
 }
 
 func UnFollow(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	// TODO
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+
+	followerID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	if err := service.UnFollow(account.ID, uint(followerID)); err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
 	utilGin.SuccessResponse(true)
 }

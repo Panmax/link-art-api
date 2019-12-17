@@ -81,7 +81,7 @@ func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand
 }
 
 func ApprovalPass(id uint) error {
-	approval, err := repository.FundApproval(id)
+	approval, err := repository.FindApproval(id)
 	if err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func ApprovalPass(id uint) error {
 }
 
 func ApprovalReject(id uint) error {
-	approval, err := repository.FundApproval(id)
+	approval, err := repository.FindApproval(id)
 	if err != nil {
 		return err
 	}
@@ -132,4 +132,33 @@ func GetArtist(accountId uint) (*representation.ArtistRepresentation, error) {
 		Avatar: account.Avatar,
 	}
 	return artist, nil
+}
+
+func Follow(accountId, followerId uint) error {
+	account, err := repository.FindAccount(followerId)
+	if err != nil {
+		return err
+	}
+	if !account.Artist {
+		return errors.New("非艺术家，不可关注")
+	}
+
+	flows, err := repository.FindFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
+	if err != nil {
+		return err
+	}
+
+	if len(flows) > 0 {
+		return nil
+	}
+
+	flow := &model.FollowFlow{
+		AccountId:  accountId,
+		FollowerId: followerId,
+	}
+	return model.CreateOne(flow)
+}
+
+func UnFollow(accountId, followerId uint) error {
+	return repository.DeleteFollowFlow(accountId, followerId)
 }
