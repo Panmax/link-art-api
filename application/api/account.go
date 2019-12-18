@@ -38,14 +38,16 @@ func AccountRouterRegister(group *gin.RouterGroup) {
 	}
 }
 
-func ArtistRouterRegister(group *gin.RouterGroup) {
-	artistGroup := group.Group("/artists")
+func UserRouterRegister(group *gin.RouterGroup) {
+	userGroup := group.Group("/users")
 	{
-		artistGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
+		userGroup.Use(middleware.JWTMiddleware.MiddlewareFunc())
 		{
-			artistGroup.GET("/:id", GetArtist)
-			artistGroup.POST("/:id/follow", Follow)
-			artistGroup.DELETE("/:id/follow", UnFollow)
+			userGroup.GET("/:id", GetUser)
+			userGroup.POST("/:id/follow", Follow)
+			userGroup.DELETE("/:id/follow", UnFollow)
+			userGroup.GET("/:id/follows", ListFollow)
+			userGroup.GET("/:id/fans", ListFans)
 		}
 	}
 }
@@ -162,7 +164,7 @@ func SubmitApproval(c *gin.Context) {
 	utilGin.SuccessResponse(true)
 }
 
-func GetArtist(c *gin.Context) {
+func GetUser(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
 	accountID, err := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -171,13 +173,13 @@ func GetArtist(c *gin.Context) {
 		return
 	}
 
-	artist, err := service.GetArtist(uint(accountID))
+	user, err := service.GetUser(uint(accountID))
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
 	}
 
-	utilGin.SuccessResponse(artist)
+	utilGin.SuccessResponse(user)
 }
 
 func Follow(c *gin.Context) {
@@ -187,6 +189,11 @@ func Follow(c *gin.Context) {
 	followerID, err := strconv.ParseUint(c.Param("id"), 10, 32)
 	if err != nil {
 		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	if account.ID == uint(followerID) {
+		utilGin.ParamErrorResponse("无法关注自己")
 		return
 	}
 
@@ -212,4 +219,52 @@ func UnFollow(c *gin.Context) {
 		return
 	}
 	utilGin.SuccessResponse(true)
+}
+
+func ListFollow(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	follows, err := service.ListFollow(uint(accountId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	// 判断当前登录用户是否关注
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	for _, user := range follows {
+		user.Follow = service.CheckFollow(account.ID, user.ID)
+	}
+
+	utilGin.SuccessResponse(follows)
+}
+
+func ListFans(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	fans, err := service.ListFans(uint(accountId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	// 判断当前登录用户是否关注
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	for _, user := range fans {
+		user.Follow = service.CheckFollow(account.ID, user.ID)
+	}
+
+	utilGin.SuccessResponse(fans)
 }

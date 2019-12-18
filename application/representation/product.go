@@ -9,7 +9,7 @@ import (
 
 type ProductRepresentation struct {
 	Id          uint                    `json:"id"`
-	Artist      *ArtistRepresentation   `json:"artist"`
+	Artist      *UserRepresentation     `json:"artist"`
 	Name        string                  `json:"name"`
 	Category    *CategoryRepresentation `json:"category"`
 	Self        bool                    `json:"self"`
@@ -24,7 +24,7 @@ type ProductRepresentation struct {
 	Description string                  `json:"description"`
 }
 
-func NewProductRepresentation(product *model.Product, category *model.Category, artist *ArtistRepresentation) *ProductRepresentation {
+func NewProductRepresentation(product *model.Product, category *model.Category, artist *UserRepresentation) *ProductRepresentation {
 
 	var detailPics []string
 	_ = json.Unmarshal([]byte(product.DetailsPicsJson), &detailPics)
@@ -101,14 +101,14 @@ type ExhibitionRepresentation struct {
 	ID          uint                   `json:"id"`
 	Title       string                 `json:"title"`
 	Description string                 `json:"description"`
-	Artist      *ArtistRepresentation  `json:"artist"`
+	Artist      *UserRepresentation    `json:"artist"`
 	StartTime   int64                  `json:"start_time"`
 	EndTime     int64                  `json:"end_time"`
 	Status      model.ExhibitionStatus `json:"status"`
 	Action      int8                   `json:"action"`
 }
 
-func NewExhibitionRepresentation(exhibition *model.Exhibition, artist *ArtistRepresentation) *ExhibitionRepresentation {
+func NewExhibitionRepresentation(exhibition *model.Exhibition, artist *UserRepresentation) *ExhibitionRepresentation {
 	var action int8
 
 	now := time.Now()

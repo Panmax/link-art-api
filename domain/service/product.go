@@ -72,7 +72,7 @@ func GetProduct(id uint) (*representation.ProductRepresentation, error) {
 		return nil, err
 	}
 
-	artist, err := GetArtist(product.AccountId)
+	artist, err := GetUser(product.AccountId)
 	if err != nil {
 		return nil, err
 	}
@@ -238,7 +238,7 @@ func GetExhibition(id uint) (*representation.ExhibitionRepresentation, error) {
 		return nil, err
 	}
 
-	artist, err := GetArtist(exhibition.AccountId)
+	artist, err := GetUser(exhibition.AccountId)
 	if err != nil {
 		return nil, err
 	}

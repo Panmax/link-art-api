@@ -120,16 +120,17 @@ func ApprovalReject(id uint) error {
 	return tx.Commit().Error
 }
 
-func GetArtist(accountId uint) (*representation.ArtistRepresentation, error) {
+func GetUser(accountId uint) (*representation.UserRepresentation, error) {
 	account, err := repository.FindAccount(accountId)
 	if err != nil {
 		return nil, err
 	}
 
-	artist := &representation.ArtistRepresentation{
-		ID:     account.ID,
-		Name:   account.Name,
-		Avatar: account.Avatar,
+	artist := &representation.UserRepresentation{
+		ID:       account.ID,
+		Name:     account.Name,
+		Avatar:   account.Avatar,
+		IsArtist: account.Artist,
 	}
 	return artist, nil
 }
@@ -161,4 +162,47 @@ func Follow(accountId, followerId uint) error {
 
 func UnFollow(accountId, followerId uint) error {
 	return repository.DeleteFollowFlow(accountId, followerId)
+}
+
+func CheckFollow(accountId, followerId uint) bool {
+	flows, _ := repository.FindFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
+	return len(flows) > 0
+}
+
+func ListFollow(accountId uint) ([]*representation.UserRepresentation, error) {
+	flows, err := repository.FindFollowFlow("account_id = ?", accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*representation.UserRepresentation, 0)
+	for _, flow := range flows {
+		user, err := GetUser(flow.FollowerId)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, user)
+	}
+
+	return results, nil
+}
+
+func ListFans(accountId uint) ([]*representation.UserRepresentation, error) {
+	flows, err := repository.FindFollowFlow("follower_id = ?", accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*representation.UserRepresentation, 0)
+	for _, flow := range flows {
+		user, err := GetUser(flow.FollowerId)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, user)
+	}
+
+	return results, nil
 }

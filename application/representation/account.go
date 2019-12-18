@@ -38,8 +38,10 @@ func NewAccountProfileRepresentation(account *model.Account, follow int, fans in
 	}
 }
 
-type ArtistRepresentation struct {
-	ID     uint    `json:"id"`
-	Name   string  `json:"name"`
-	Avatar *string `json:"avatar"`
+type UserRepresentation struct {
+	ID       uint    `json:"id"`
+	Name     string  `json:"name"`
+	Avatar   *string `json:"avatar"`
+	IsArtist bool    `json:"is_artist"`
+	Follow   bool    `json:"follow"`
 }

@@ -12,7 +12,7 @@ type Product struct {
 	AccountId uint `gorm:"not null"`
 
 	Name            string `gorm:"size:64;not null"`
-	Status          uint   `gorm:"not null"`
+	Status          int8   `gorm:"not null"`
 	CategoryId      uint   `gorm:"not null"`
 	Self            bool   `gorm:"not null"`
 	Price           uint   `gorm:"not null"`
@@ -32,7 +32,7 @@ func NewProduct(AccountId uint, Name string, CategoryId uint, Self bool, Price u
 	return &Product{
 		AccountId:       AccountId,
 		Name:            Name,
-		Status:          1, // TODO
+		Status:          -1, // TODO 待审核-1，上架1，下架2
 		CategoryId:      CategoryId,
 		Self:            Self,
 		Price:           Price,
@@ -62,12 +62,12 @@ func (p *Product) Update(updatedProduct *Product) {
 	p.Description = updatedProduct.Description
 }
 
-func (p *Product) Shelves() {
+func (p *Product) Shelves() { // 通过审核 && 上架
 	p.Status = 1
 }
 
-func (p *Product) TakeOff() {
-	p.Status = 0
+func (p *Product) TakeOff() { // 下架
+	p.Status = 2
 }
 
 type Category struct {
