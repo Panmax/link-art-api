@@ -50,6 +50,8 @@ func UserRouterRegister(group *gin.RouterGroup) {
 			userGroup.GET("/:id/fans", ListFans)
 		}
 	}
+
+	group.GET("/artists/search", SearchArtist)
 }
 
 func Register(c *gin.Context) {
@@ -267,4 +269,16 @@ func ListFans(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(fans)
+}
+
+func SearchArtist(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	keyword := c.Query("keyword")
+	results, err := service.SearchArtist(keyword)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(results)
 }

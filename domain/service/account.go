@@ -71,7 +71,7 @@ func GetAccountPoints(id uint) uint {
 }
 
 func SubmitApproval(accountId uint, submitCommand *command.SubmitApprovalCommand) error {
-	_, err := repository.FindApprovalByUser(accountId)
+	_, err := repository.FindApprovalByAccount(accountId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("认证审核中，请勿重复提交")
 	}
@@ -144,7 +144,7 @@ func Follow(accountId, followerId uint) error {
 		return errors.New("非艺术家，不可关注")
 	}
 
-	flows, err := repository.FindFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
+	flows, err := repository.FindAllFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
 	if err != nil {
 		return err
 	}
@@ -165,12 +165,12 @@ func UnFollow(accountId, followerId uint) error {
 }
 
 func CheckFollow(accountId, followerId uint) bool {
-	flows, _ := repository.FindFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
+	flows, _ := repository.FindAllFollowFlow("account_id = ? AND follower_id = ?", accountId, followerId)
 	return len(flows) > 0
 }
 
 func ListFollow(accountId uint) ([]*representation.UserRepresentation, error) {
-	flows, err := repository.FindFollowFlow("account_id = ?", accountId)
+	flows, err := repository.FindAllFollowFlow("account_id = ?", accountId)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ func ListFollow(accountId uint) ([]*representation.UserRepresentation, error) {
 }
 
 func ListFans(accountId uint) ([]*representation.UserRepresentation, error) {
-	flows, err := repository.FindFollowFlow("follower_id = ?", accountId)
+	flows, err := repository.FindAllFollowFlow("follower_id = ?", accountId)
 	if err != nil {
 		return nil, err
 	}
@@ -197,6 +197,28 @@ func ListFans(accountId uint) ([]*representation.UserRepresentation, error) {
 	results := make([]*representation.UserRepresentation, 0)
 	for _, flow := range flows {
 		user, err := GetUser(flow.FollowerId)
+		if err != nil {
+			return nil, err
+		}
+
+		results = append(results, user)
+	}
+
+	return results, nil
+}
+
+func SearchArtist(keyword string) ([]*representation.UserRepresentation, error) {
+	accounts, err := repository.FindAllAccountByNameLike(keyword)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*representation.UserRepresentation, 0)
+	for _, account := range accounts {
+		if !account.Artist {
+			continue // 过滤非艺术家
+		}
+		user, err := GetUser(account.ID)
 		if err != nil {
 			return nil, err
 		}

@@ -14,7 +14,13 @@ func FindAccount(id uint) (*model.Account, error) {
 	return account, err
 }
 
-func FindApprovalByUser(accountId uint) (*model.Approval, error) {
+func FindAllAccountByNameLike(keyword string) ([]model.Account, error) {
+	var accounts []model.Account
+	err := model.DB.Where("name LIKE ?", "%"+keyword+"%").Find(&accounts).Error
+	return accounts, err
+}
+
+func FindApprovalByAccount(accountId uint) (*model.Approval, error) {
 	approval := &model.Approval{}
 	err := model.DB.Where("account_id = ?", accountId).Find(&approval).Error
 	return approval, err
@@ -26,7 +32,7 @@ func FindApproval(id uint) (*model.Approval, error) {
 	return approval, err
 }
 
-func FindFollowFlow(args ...interface{}) ([]model.FollowFlow, error) {
+func FindAllFollowFlow(args ...interface{}) ([]model.FollowFlow, error) {
 	var flows []model.FollowFlow
 	cond := model.DB
 	if len(args) >= 2 {
