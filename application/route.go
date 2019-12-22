@@ -30,6 +30,8 @@ func SetupRoute(engine *gin.Engine) {
 	api.AuctionRouterRegister(apiGroup)
 	api.ExhibitionRouterRegister(apiGroup)
 
+	api.IndexRouterRegister(apiGroup)
+
 	api.CommonRouterRegister(apiGroup)
 
 }

@@ -170,14 +170,14 @@ func CheckFollow(accountId, followerId uint) bool {
 }
 
 func ListFollow(accountId uint) ([]*representation.UserRepresentation, error) {
-	flows, err := repository.FindAllFollowFlow("account_id = ?", accountId)
+	followerIds, err := listFollowerAccountId(accountId)
 	if err != nil {
 		return nil, err
 	}
 
 	results := make([]*representation.UserRepresentation, 0)
-	for _, flow := range flows {
-		user, err := GetUser(flow.FollowerId)
+	for _, followerId := range followerIds {
+		user, err := GetUser(followerId)
 		if err != nil {
 			return nil, err
 		}
@@ -186,6 +186,20 @@ func ListFollow(accountId uint) ([]*representation.UserRepresentation, error) {
 	}
 
 	return results, nil
+}
+
+func listFollowerAccountId(accountId uint) ([]uint, error) {
+	flows, err := repository.FindAllFollowFlow("account_id = ?", accountId)
+	if err != nil {
+		return nil, err
+	}
+
+	ids := make([]uint, 0)
+	for _, flow := range flows {
+		ids = append(ids, flow.FollowerId)
+	}
+
+	return ids, nil
 }
 
 func ListFans(accountId uint) ([]*representation.UserRepresentation, error) {

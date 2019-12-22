@@ -8,9 +8,18 @@ func FindProduct(id uint) (*model.Product, error) {
 	return product, err
 }
 
-func FindAllProductByUser(accountId uint) ([]model.Product, error) {
+func FindAllProduct(args ...interface{}) ([]model.Product, error) {
 	var products []model.Product
-	err := model.DB.Where("account_id = ?", accountId).Order("created_at desc").Find(&products).Error
+
+	cond := model.DB
+	if len(args) >= 2 {
+		cond = cond.Where(args[0], args[1:]...)
+	} else if len(args) >= 1 {
+		cond = cond.Where(args[0])
+	}
+
+	err := cond.Order("created_at desc").Find(&products).Error
+
 	return products, err
 }
 

@@ -42,13 +42,12 @@ func UpdateProduct(id uint, accountId *uint, productCommand *command.CreateProdu
 }
 
 func ListProductByAccount(accountId uint) ([]*representation.ProductRepresentation, error) {
-	var productRepresentations []*representation.ProductRepresentation
-
-	products, err := repository.FindAllProductByUser(accountId)
+	products, err := repository.FindAllProduct("account_id = ? AND status = 1", accountId)
 	if err != nil {
 		return nil, err
 	}
 
+	productRepresentations := make([]*representation.ProductRepresentation, 0)
 	for _, p := range products {
 		productRepresentation, err := GetProduct(p.ID)
 		if err != nil {
