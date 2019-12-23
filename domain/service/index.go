@@ -24,8 +24,24 @@ func ListDiscoveryProduct() ([]*representation.ProductRepresentation, error) {
 	return productRepresentations, nil
 }
 
-func ListDiscoveryArtist() ([]*representation.UserRepresentation, error) {
-	return nil, nil
+func ListDiscoveryArtist(accountId uint) ([]*representation.UserRepresentation, error) {
+	accounts, err := repository.FindAllAccount("artist = ?", true)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]*representation.UserRepresentation, 0)
+	for _, account := range accounts {
+		if account.ID != accountId && !CheckFollow(accountId, account.ID) {
+			user, err := GetUser(account.ID)
+			if err != nil {
+				return nil, err
+			}
+			results = append(results, user)
+		}
+	}
+
+	return results, nil
 }
 
 func ListFollowArtistProduct(accountId uint) ([]*representation.ProductRepresentation, error) {

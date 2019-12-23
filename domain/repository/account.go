@@ -14,9 +14,17 @@ func FindAccount(id uint) (*model.Account, error) {
 	return account, err
 }
 
-func FindAllAccountByNameLike(keyword string) ([]model.Account, error) {
+func FindAllAccount(args ...interface{}) ([]model.Account, error) {
 	var accounts []model.Account
-	err := model.DB.Where("name LIKE ?", "%"+keyword+"%").Find(&accounts).Error
+
+	cond := model.DB
+	if len(args) >= 2 {
+		cond = cond.Where(args[0], args[1:]...)
+	} else if len(args) >= 1 {
+		cond = cond.Where(args[0])
+	}
+
+	err := cond.Find(&accounts).Error
 	return accounts, err
 }
 

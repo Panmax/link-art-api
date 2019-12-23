@@ -222,7 +222,7 @@ func ListFans(accountId uint) ([]*representation.UserRepresentation, error) {
 }
 
 func SearchArtist(keyword string) ([]*representation.UserRepresentation, error) {
-	accounts, err := repository.FindAllAccountByNameLike(keyword)
+	accounts, err := repository.FindAllAccount("artist = ? AND name LIKE ?", true, "%"+keyword+"%")
 	if err != nil {
 		return nil, err
 	}

@@ -34,7 +34,16 @@ func ListDiscoveryProduct(c *gin.Context) {
 
 func ListDiscoveryArtist(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
-	artists, err := service.ListDiscoveryArtist()
+
+	// 可登录也可以不登录
+	var accountId uint
+	claims, _ := middleware.JWTMiddleware.GetClaimsFromJWT(c)
+	if claims != nil {
+		id := claims[middleware.IdentityKey].(float64)
+		accountId = uint(id)
+	}
+
+	artists, err := service.ListDiscoveryArtist(accountId)
 	if err != nil {
 		utilGin.ParamErrorResponse(err.Error())
 		return
