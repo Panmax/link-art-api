@@ -15,6 +15,7 @@ import (
 
 func ProductRouterRegister(group *gin.RouterGroup) {
 	group.GET("/categories", ListCategoryTree)
+	group.GET("/users/:id/products", ListUserProduct)
 
 	productGroup := group.Group("/products")
 	{
@@ -117,7 +118,7 @@ func ListAccountProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
 	account := c.MustGet(middleware.IdentityKey).(*model.Account)
-	products, err := service.ListProductByAccount(account.ID)
+	products, err := service.ListUserProduct(account.ID)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
@@ -316,4 +317,22 @@ func ListExhibitionProduct(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(products)
+}
+
+func ListUserProduct(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	results, err := service.ListUserProduct(uint(accountId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(results)
 }

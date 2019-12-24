@@ -41,7 +41,7 @@ func UpdateProduct(id uint, accountId *uint, productCommand *command.CreateProdu
 	return model.SaveOne(product)
 }
 
-func ListProductByAccount(accountId uint) ([]*representation.ProductRepresentation, error) {
+func ListUserProduct(accountId uint) ([]*representation.ProductRepresentation, error) {
 	products, err := repository.FindAllProduct("account_id = ? AND status = 1", accountId)
 	if err != nil {
 		return nil, err
