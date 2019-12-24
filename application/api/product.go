@@ -14,8 +14,13 @@ import (
 )
 
 func ProductRouterRegister(group *gin.RouterGroup) {
-	group.GET("/categories", ListCategoryTree)
 	group.GET("/users/:id/products", ListUserProduct)
+
+	categoryGroup := group.Group("/categories")
+	{
+		categoryGroup.GET("", ListCategoryTree)
+		categoryGroup.GET("/:id/products", ListCategoryProduct)
+	}
 
 	productGroup := group.Group("/products")
 	{
@@ -329,6 +334,23 @@ func ListUserProduct(c *gin.Context) {
 	}
 
 	results, err := service.ListUserProduct(uint(accountId))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(results)
+}
+
+func ListCategoryProduct(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+	categoryId, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+
+	results, err := service.ListCategoryProduct(uint(categoryId))
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return

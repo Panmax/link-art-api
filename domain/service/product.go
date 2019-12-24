@@ -1,6 +1,7 @@
 package service
 
 import (
+	"container/list"
 	"errors"
 	"link-art-api/application/command"
 	"link-art-api/application/representation"
@@ -262,4 +263,41 @@ func ListExhibitionProduct(id uint) ([]*representation.ProductRepresentation, er
 	}
 
 	return products, nil
+}
+
+func ListCategoryProduct(categoryId uint) ([]*representation.ProductRepresentation, error) {
+	results := make([]*representation.ProductRepresentation, 0)
+
+	ids := list.New()
+	pushChildCategoryFlatIds(categoryId, ids)
+	ids.PushBack(categoryId)
+
+	for p := ids.Front(); p != nil; p = p.Next() {
+		products, err := repository.FindAllProduct("category_id = ? AND status = 1", p.Value)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, product := range products {
+			productRepresentation, err := GetProduct(product.ID)
+			if err != nil {
+				return nil, err
+			}
+			results = append(results, productRepresentation)
+		}
+	}
+
+	return results, nil
+}
+
+func pushChildCategoryFlatIds(categoryId uint, ids *list.List) {
+	categories, _ := repository.FindAllCategoryByParentId(&categoryId)
+	if categories != nil {
+		for _, category := range categories {
+			ids.PushBack(category.ID)
+			pushChildCategoryFlatIds(category.ID, ids)
+		}
+	}
+
+	return
 }
