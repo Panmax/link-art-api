@@ -14,7 +14,6 @@ import (
 )
 
 func ProductRouterRegister(group *gin.RouterGroup) {
-	group.GET("/users/:id/products", ListUserProduct)
 
 	categoryGroup := group.Group("/categories")
 	{
@@ -29,7 +28,7 @@ func ProductRouterRegister(group *gin.RouterGroup) {
 			productGroup.POST("", CreateProduct)
 			productGroup.PUT("/:id", UpdateProduct)
 			productGroup.GET("/:id", GetProduct)
-			productGroup.GET("", ListAccountProduct)
+			productGroup.GET("", ListProduct)
 			productGroup.POST("/:id/shelves", ShelvesProduct)
 			productGroup.POST("/:id/take-off", TakeOffProduct)
 		}
@@ -119,11 +118,13 @@ func UpdateProduct(c *gin.Context) {
 	utilGin.SuccessResponse(true)
 }
 
-func ListAccountProduct(c *gin.Context) {
+func ListProduct(c *gin.Context) {
 	utilGin := response.Gin{Ctx: c}
 
-	account := c.MustGet(middleware.IdentityKey).(*model.Account)
-	products, err := service.ListUserProduct(account.ID)
+	keyword := c.Query("keyword")
+	accountID, _ := strconv.ParseUint(c.Query("artist_id"), 10, 64)
+
+	products, err := service.ListProduct(uint(accountID), keyword)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
@@ -322,24 +323,6 @@ func ListExhibitionProduct(c *gin.Context) {
 	}
 
 	utilGin.SuccessResponse(products)
-}
-
-func ListUserProduct(c *gin.Context) {
-	utilGin := response.Gin{Ctx: c}
-
-	accountId, err := strconv.ParseUint(c.Param("id"), 10, 32)
-	if err != nil {
-		utilGin.ParamErrorResponse(err.Error())
-		return
-	}
-
-	results, err := service.ListUserProduct(uint(accountId))
-	if err != nil {
-		utilGin.ErrorResponse(-1, err.Error())
-		return
-	}
-
-	utilGin.SuccessResponse(results)
 }
 
 func ListCategoryProduct(c *gin.Context) {

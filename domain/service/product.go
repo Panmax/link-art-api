@@ -42,8 +42,23 @@ func UpdateProduct(id uint, accountId *uint, productCommand *command.CreateProdu
 	return model.SaveOne(product)
 }
 
-func ListUserProduct(accountId uint) ([]*representation.ProductRepresentation, error) {
-	products, err := repository.FindAllProduct("account_id = ? AND status = 1", accountId)
+func ListProduct(accountId uint, keyword string) ([]*representation.ProductRepresentation, error) {
+
+	var products []model.Product
+	var err error
+
+	s := "%" + keyword + "%"
+
+	if accountId == 0 && len(keyword) == 0 {
+		products, err = repository.FindAllProduct()
+	} else if accountId > 0 && len(keyword) == 0 {
+		products, err = repository.FindAllProduct("account_id = ? AND status = 1", accountId)
+	} else if accountId == 0 && len(keyword) > 0 {
+		products, err = repository.FindAllProduct("(name LIKE ? OR description LIKE ?) AND status = 1", s, s)
+	} else {
+		products, err = repository.FindAllProduct(
+			"(name LIKE ? OR description LIKE ?) AND account_id = ? AND status = 1", s, s, accountId)
+	}
 	if err != nil {
 		return nil, err
 	}
