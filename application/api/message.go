@@ -52,13 +52,13 @@ func DeleteMessage(c *gin.Context) {
 		return
 	}
 
-	r, err := service.DeleteMessage(uint(messageId))
+	err = service.DeleteMessage(uint(messageId))
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
 	}
 
-	utilGin.SuccessResponse(r)
+	utilGin.SuccessResponse(true)
 }
 
 func GetMessage(c *gin.Context) {
@@ -101,11 +101,11 @@ func ReadMessage(c *gin.Context) {
 		return
 	}
 
-	r, err := service.ReadMessage(uint(messageId))
+	err = service.ReadMessage(uint(messageId))
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return
 	}
 
-	utilGin.SuccessResponse(r)
+	utilGin.SuccessResponse(true)
 }
