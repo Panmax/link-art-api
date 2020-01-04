@@ -20,6 +20,7 @@ func AddressRouterRegister(group *gin.RouterGroup) {
 			addressGroup.POST("", CreateAddress)
 			addressGroup.DELETE("/:id", DeleteAddress)
 			addressGroup.POST("/:id/default", SetDefaultAddress)
+			addressGroup.PUT("/:id", UpdateAddress)
 		}
 	}
 
@@ -95,6 +96,41 @@ func CreateAddress(c *gin.Context) {
 	addressCommand := cmd.(*command.CreateAddressCommand)
 
 	err = service.CreateAddress(account.ID, addressCommand)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+
+	utilGin.SuccessResponse(true)
+}
+
+func UpdateAddress(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	account := c.MustGet(middleware.IdentityKey).(*model.Account)
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+	address, err := service.GetAddress(uint(id))
+	if err != nil {
+		utilGin.ErrorResponse(-1, err.Error())
+		return
+	}
+	if address.AccountId != account.ID {
+		utilGin.ErrorResponse(-1, "fuck u")
+		return
+	}
+
+	cmd, err := bind.Bind(&command.CreateAddressCommand{}, c)
+	if err != nil {
+		utilGin.ParamErrorResponse(err.Error())
+		return
+	}
+	addressCommand := cmd.(*command.CreateAddressCommand)
+
+	err = service.UpdateAddress(uint(id), addressCommand)
 	if err != nil {
 		utilGin.ErrorResponse(-1, err.Error())
 		return

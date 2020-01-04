@@ -116,6 +116,17 @@ func GetAddress(id uint) (*representation.AddressRepresentation, error) {
 	return representation.NewAddressRepresentation(address, province.Name, city.Name, county.Name, false), nil
 }
 
+func UpdateAddress(id uint, addressCommand *command.CreateAddressCommand) error {
+	address, err := repository.FindAddress(id)
+	if err != nil {
+		return err
+	}
+	address.Update(addressCommand.Name, addressCommand.Phone,
+		addressCommand.ProvinceId, addressCommand.CityId, addressCommand.CountyId, addressCommand.Address)
+
+	return model.SaveOne(address)
+}
+
 func SetDefaultAddress(accountId, addressId uint) error {
 	address, err := repository.FindAddress(addressId)
 	if err != nil {

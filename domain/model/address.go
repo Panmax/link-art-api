@@ -29,6 +29,15 @@ type Address struct {
 	Address    string `gorm:"not null"`
 }
 
+func (a *Address) Update(name, phone, provinceId, cityId, countyId, address string) {
+	a.Name = name
+	a.Phone = phone
+	a.ProvinceId = provinceId
+	a.CityId = cityId
+	a.CountyId = countyId
+	a.Address = address
+}
+
 func NewAddress(accountId uint, name, phone, provinceId, cityId, countyId, address string) *Address {
 	return &Address{
 		Name:       name,
