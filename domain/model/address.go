@@ -21,20 +21,22 @@ type Address struct {
 	Model
 
 	AccountId  uint   `gorm:"not null"`
+	Name       string `gorm:"size:64;not null"`
+	Phone      string `gorm:"size:64;not null"`
 	ProvinceId string `gorm:"size:64;not null"`
 	CityId     string `gorm:"size:64;not null"`
 	CountyId   string `gorm:"size:64;not null"`
 	Address    string `gorm:"not null"`
-	IsDefault  bool   `gorm:"not null"`
 }
 
-func NewAddress(accountId uint, provinceId, cityId, countyId, address string) *Address {
+func NewAddress(accountId uint, name, phone, provinceId, cityId, countyId, address string) *Address {
 	return &Address{
+		Name:       name,
+		Phone:      phone,
 		AccountId:  accountId,
 		ProvinceId: provinceId,
 		CityId:     cityId,
 		CountyId:   countyId,
 		Address:    address,
-		IsDefault:  false,
 	}
 }

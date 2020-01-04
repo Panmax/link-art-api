@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"link-art-api/application/command"
 	"link-art-api/application/representation"
 	"link-art-api/domain/model"
@@ -9,8 +11,8 @@ import (
 	"link-art-api/infrastructure/util/cache"
 )
 
-func ListRegion() (representation.RegionPresentation, error) {
-	region := representation.RegionPresentation{}
+func ListRegion() (representation.RegionRepresentation, error) {
+	region := representation.RegionRepresentation{}
 
 	cacheResult, _ := cache.CACHE.Get(cache.RegionCacheKey).Result()
 	if cacheResult != "" {
@@ -66,6 +68,69 @@ func ListRegion() (representation.RegionPresentation, error) {
 }
 
 func CreateAddress(accountId uint, addressCommand *command.CreateAddressCommand) error {
-	address := model.NewAddress(accountId, addressCommand.ProvinceId, addressCommand.CityId, addressCommand.CountyId, addressCommand.Address)
+	address := model.NewAddress(accountId, addressCommand.Name, addressCommand.Phone,
+		addressCommand.ProvinceId, addressCommand.CityId, addressCommand.CountyId, addressCommand.Address)
 	return model.SaveOne(address)
+}
+
+func ListAddress(accountId uint) ([]*representation.AddressRepresentation, error) {
+	addressRepresentations := make([]*representation.AddressRepresentation, 0)
+	defaultAddressId, _ := cache.CACHE.Get(fmt.Sprintf(cache.DefaultAddressKey, accountId)).Int()
+
+	addresses, err := repository.FindAllAddressByAccount(accountId)
+	if err != nil {
+		return nil, err
+	}
+	for _, address := range addresses {
+		a, err := GetAddress(address.ID)
+		if err != nil {
+			return nil, err
+		}
+		if uint(defaultAddressId) == a.Id {
+			a.IsDefault = true
+		}
+		addressRepresentations = append(addressRepresentations, a)
+	}
+
+	return addressRepresentations, nil
+}
+
+func GetAddress(id uint) (*representation.AddressRepresentation, error) {
+	address, err := repository.FindAddress(id)
+	if err != nil {
+		return nil, err
+	}
+	province, err := repository.FindProvince(address.ProvinceId)
+	if err != nil {
+		return nil, err
+	}
+	city, err := repository.FindCity(address.CityId)
+	if err != nil {
+		return nil, err
+	}
+	county, err := repository.FindCounty(address.CountyId)
+	if err != nil {
+		return nil, err
+	}
+
+	return representation.NewAddressRepresentation(address, province.Name, city.Name, county.Name, false), nil
+}
+
+func SetDefaultAddress(accountId, addressId uint) error {
+	address, err := repository.FindAddress(addressId)
+	if err != nil {
+		return err
+	}
+	if address.AccountId != accountId {
+		return errors.New("fuck U")
+	}
+
+	key := fmt.Sprintf(cache.DefaultAddressKey, accountId)
+	cache.CACHE.Set(key, addressId, 0)
+
+	return nil
+}
+
+func DeleteAddress(id uint) error {
+	return repository.DeleteAddress(id)
 }
