@@ -41,6 +41,7 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&Province{})
 	db.AutoMigrate(&City{})
 	db.AutoMigrate(&County{})
+	db.AutoMigrate(&Address{})
 }
 
 // Setup initializes the database instance

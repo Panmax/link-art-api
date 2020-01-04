@@ -2,7 +2,9 @@ package service
 
 import (
 	"encoding/json"
+	"link-art-api/application/command"
 	"link-art-api/application/representation"
+	"link-art-api/domain/model"
 	"link-art-api/domain/repository"
 	"link-art-api/infrastructure/util/cache"
 )
@@ -61,4 +63,9 @@ func ListRegion() (representation.RegionPresentation, error) {
 	cacheByte, err := json.Marshal(region)
 	cache.CACHE.Set(cache.RegionCacheKey, string(cacheByte), 0)
 	return region, err
+}
+
+func CreateAddress(accountId uint, addressCommand *command.CreateAddressCommand) error {
+	address := model.NewAddress(accountId, addressCommand.ProvinceId, addressCommand.CityId, addressCommand.CountyId, addressCommand.Address)
+	return model.SaveOne(address)
 }
