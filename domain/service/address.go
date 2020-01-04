@@ -1,12 +1,21 @@
 package service
 
 import (
+	"encoding/json"
 	"link-art-api/application/representation"
 	"link-art-api/domain/repository"
+	"link-art-api/infrastructure/util/cache"
 )
 
-func ListRegion() ([]*representation.ProvinceRepresentation, error) {
-	regions := make([]*representation.ProvinceRepresentation, 0)
+func ListRegion() (representation.RegionPresentation, error) {
+	region := representation.RegionPresentation{}
+
+	cacheResult, _ := cache.CACHE.Get(cache.RegionCacheKey).Result()
+	if cacheResult != "" {
+		err := json.Unmarshal([]byte(cacheResult), &region)
+		return region, err
+	}
+
 	provinces, err := repository.FindAllProvince()
 	if err != nil {
 		return nil, err
@@ -46,7 +55,10 @@ func ListRegion() ([]*representation.ProvinceRepresentation, error) {
 			ProvinceId: province.ProvinceId,
 			Cities:     regionCites,
 		}
-		regions = append(regions, p)
+		region = append(region, p)
 	}
-	return regions, nil
+
+	cacheByte, err := json.Marshal(region)
+	cache.CACHE.Set(cache.RegionCacheKey, string(cacheByte), 0)
+	return region, err
 }

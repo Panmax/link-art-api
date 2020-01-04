@@ -42,6 +42,14 @@ type Qiniu struct {
 
 var QiniuConfig = &Qiniu{}
 
+type Redis struct {
+	Host     string
+	Password string
+	DB       int
+}
+
+var RedisConfig = &Redis{}
+
 var cfg *ini.File
 
 // Setup initialize the configuration instance
@@ -56,6 +64,7 @@ func Setup() {
 	mapTo("server", ServerConfig)
 	mapTo("database", DatabaseConfig)
 	mapTo("qiniu", QiniuConfig)
+	mapTo("redis", RedisConfig)
 
 	// FIXME
 	AppConfig.JwtTimeout = AppConfig.JwtTimeout * time.Second

@@ -8,6 +8,7 @@ import (
 	"link-art-api/application/middleware"
 	"link-art-api/domain/model"
 	"link-art-api/infrastructure/config"
+	"link-art-api/infrastructure/util/cache"
 	"log"
 	"net/http"
 	"os"
@@ -19,13 +20,14 @@ func init() {
 	config.Setup()
 	model.Setup()
 	middleware.SetupAuth()
+	application.SetupSchedule()
+	cache.SetupCache()
 }
 
 func main() {
 	gin.SetMode(config.ServerConfig.Mode)
 	engine := gin.Default()
 	application.SetupRoute(engine)
-	application.SetupSchedule()
 
 	Port := fmt.Sprintf(":%d", config.ServerConfig.Port)
 	server := &http.Server{

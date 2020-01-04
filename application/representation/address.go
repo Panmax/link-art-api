@@ -18,3 +18,5 @@ type CountyRepresentation struct {
 	CountyId string `json:"county_id"`
 	CityId   string `json:"city_id"`
 }
+
+type RegionPresentation []*ProvinceRepresentation
