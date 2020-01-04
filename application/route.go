@@ -34,6 +34,8 @@ func SetupRoute(engine *gin.Engine) {
 
 	api.MessageRouterRegister(apiGroup)
 
+	api.AddressRouterRegister(apiGroup)
+
 	api.CommonRouterRegister(apiGroup)
 
 }
