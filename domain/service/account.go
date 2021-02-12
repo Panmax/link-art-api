@@ -7,8 +7,15 @@ import (
 	"link-art-api/application/representation"
 	"link-art-api/domain/model"
 	"link-art-api/domain/repository"
+	"math/rand"
 	"time"
 )
+
+func SendSms(phone string) int32 {
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	code := rnd.Int31n(1000000)
+	return code
+}
 
 func AccountRegister(phone, password string) (*model.Account, error) {
 	_, err := repository.FindAccountByPhone(phone)

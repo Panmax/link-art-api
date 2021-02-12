@@ -3,6 +3,10 @@ package command
 import "link-art-api/domain/model"
 
 // https://godoc.org/github.com/go-playground/validator
+type SendSmsCommand struct {
+	Phone string `binding:"required,len=11"`
+}
+
 type LoginCommand struct {
 	Phone    string `binding:"required,len=11"`
 	Password string `binding:"required,min=8,max=32"`

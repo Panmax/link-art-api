@@ -14,6 +14,7 @@ import (
 func AuthRouterRegister(group *gin.RouterGroup) {
 	authGroup := group.Group("/auth")
 	{
+		authGroup.POST("/send_sms", SendSms)
 		authGroup.POST("/register", Register)
 		authGroup.POST("/login", middleware.JWTMiddleware.LoginHandler)
 		authGroup.POST("/refresh_token", middleware.JWTMiddleware.RefreshHandler)
@@ -36,6 +37,22 @@ func AccountRouterRegister(group *gin.RouterGroup) {
 			accountGroup.POST("/approval", SubmitApproval)
 		}
 	}
+}
+func SendSms(c *gin.Context) {
+	utilGin := response.Gin{Ctx: c}
+
+	cmd, e := bind.Bind(&command.SendSmsCommand{}, c)
+
+	if e != nil {
+		utilGin.ParamErrorResponse(e.Error())
+		return
+	}
+
+	SendSmsCommand := cmd.(*command.SendSmsCommand)
+	code := service.SendSms(SendSmsCommand.Phone)
+
+	utilGin.SuccessResponse(code)
+
 }
 
 func UserRouterRegister(group *gin.RouterGroup) {
